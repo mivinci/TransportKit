@@ -1,23 +1,25 @@
-# TK
+# TransportKit
 
-**T**ransport**K**it
+**T**ransport**K**it - 提供多协议数据传输加速、P2P 传输、本地代理等功能。
 
-## Contents
+## 架构
 
-- [Bazel](./Bazel) - Bazel 配置依赖
-- [CMake](./CMake) - CMake 配置依赖
+![TransportKit](./Documents/TransportKit.png)
+
+## 目录
+
+- [Bazel](./Bazel) - Bazel 配置
+- [CMake](./CMake) - CMake 配置
 - [Examples](./Examples) - 使用示例
 - [Scripts](./Scripts) - 构建相关的脚本
 - [Source](./Source)
-  - [Transport](./Source/Transport) - 数据传输模块（提供上传下载优化加速）
-  - [TLV](./Source/TLV) - 数据序列化协议
-  - [P2P](./Source/P2P) - P2P 通信框架
-  - [Tun](./Source/Tun) - 网络层代理模块
-  - [Debug](Source/Debug) -  本地调试模块
+  - [API](./Source/API) - TransportKit C API
+  - [TransportCore](./Source/TransportCore) - 数据传输内核
+  - [LocalServer](./Source/LocalServer) - 本地代理服务
+  - [Debugger](Source/Debugger) -  本地调试器
   - [Telemetry](Source/Telemetry) - 遥测模块
-  - [Probe](Source/Probe) - 拨测模块
-  - [JSC](Source/JSC) - 轻量 JS 运行时，用于实现插件系统
-  - [TX](./Source/TX) - 基础运行时库  (**T**emplate e**X**tended)
+  - [NetProber](Source/NetProber) - 网络拨测器
   - [ThirdParty](./Source/ThirdParty) - 第三方库
+  - [TX](./Source/TX) - 基础运行时库  (**T**emplate e**X**tended)
 - [Platform](./Source/Platform) - 各个平台对 TransportKit C API 的绑定
 - [Tests](./Tests) - 功能测试
