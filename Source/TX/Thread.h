@@ -1,7 +1,7 @@
 #pragma once
+#include <exception>
 #include <functional>
 #include <utility>
-#include <exception>
 
 #include "TX/Assert.h"
 #include "TX/Memory.h"
@@ -92,6 +92,14 @@ class TX_NODISCARD Thread final {
     return Id(Thread::MainThreadId);
 #else
     return Id(Thread::MainThreadId);
+#endif
+  }
+
+  TX_NODISCARD Id GetId() const {
+#ifdef _WIN32
+    return handle_;
+#else
+    return Id(tid_);
 #endif
   }
 

@@ -138,7 +138,7 @@ class RunLoop final : public RefCounted<RunLoop> {
   }
 
   static void ClearGlobalContext();
-  static Ref<RunLoop> Spawn(const String &name = "RunLoop");
+  static Own<Thread> SpawnThread(const String &name = "TXRunLoop");
   static Ref<RunLoop> FromThread(const Thread::Id &id);
   static Ref<RunLoop> Current() { return FromThread(Thread::Current()); }
   static Ref<RunLoop> Main() { return FromThread(Thread::Main()); }

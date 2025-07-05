@@ -11,11 +11,11 @@ void TaskManager::Start() {
 }
 
 void TaskManager::Stop() {
-  run_loop_->RemoveTimer(this);
   auto guard = guard_.Lock();
   for (auto &it : guard->task_map_) {
     it.second.Stop();
   }
+  run_loop_->RemoveTimer(this);
   TX_TRACE_END;
 }
 
@@ -61,6 +61,8 @@ TX::Option<Task> TaskManager::FindTask(const int32_t task_id) {
   return it == task_map.end() ? TX::None : TX::Some(it->second);
 }
 
-void TaskManager::OnTimeout(TX::RunLoop &, TX::RefPtr<TX::RunLoop::Scope> &) {}
+void TaskManager::OnTimeout(TX::RunLoop &, TX::RefPtr<TX::RunLoop::Scope> &) {
+  TC_INFO("");
+}
 
 }  // namespace TransportCore

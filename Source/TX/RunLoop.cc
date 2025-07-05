@@ -15,10 +15,9 @@ struct RunLoopGlobalContext {
 
 static Mutex<RunLoopGlobalContext> runLoopGlobalContext;
 
-// Ref<RunLoop> RunLoop::Spawn(const String &name) {
-//   Thread::Spawn([]() {  });
-// }
-
+Own<Thread> RunLoop::SpawnThread(const String &name) {
+  return Thread::Spawn([] { Current()->Run(); }, name);
+}
 
 Ref<RunLoop> RunLoop::FromThread(const Thread::Id &id) {
   auto global_context = runLoopGlobalContext.Lock();
