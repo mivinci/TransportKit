@@ -3,15 +3,16 @@
 #include <stddef.h>  // NOLINT(*-deprecated-headers)
 #include <stdint.h>  // NOLINT(*-deprecated-headers)
 
-#include "TransportCoreBase.h"
-#include "TransportCoreErrorCode.h"
+#include "TransportCore/API/TransportCoreBase.h"
+#include "TransportCore/API/TransportCoreErrorCode.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif  // __cplusplus
 
 enum TransportCoreTaskKind {
-  kTransportCoreTaskKindPlain = 1,
+  kTransportCoreTaskKindUnSpec = 0,
+  kTransportCoreTaskKindPlain,
 };
 
 enum TransportCoreTaskEventKind {
@@ -32,22 +33,25 @@ struct TransportCoreTaskEvent {
 
 struct TransportCoreTaskContext {
   TransportCoreTaskKind kind;
+  char *rid;
   char *urls;
   char *save_path;
   void *context;
-  void (*onEvent)(TransportCoreTaskEvent, void *);
+  void (*schedule)(uint64_t, void *);
+  void (*notify)(TransportCoreTaskEvent, void *);
 };
 
-TC_API(void) TransportCoreInit();
-TC_API(void) TransportCoreDestroy();
-TC_API(int32_t) TransportCoreCreateTask(const TransportCoreTaskContext &);
-TC_API(void) TransportCoreStartTask(int32_t);
-TC_API(void) TransportCoreStopTask(int32_t);
-TC_API(void) TransportCorePauseTask(int32_t);
-TC_API(void) TransportCoreResumeTask(int32_t);
-TC_API(int64_t) TransportCoreReadData(int32_t, size_t, size_t, char *);
-TC_API(void) TransportCoreGetProxyURL(int32_t, char *, size_t);
-TC_API(void) TransportCoreGetErrorString(int, char *, size_t);
+TK_API(void) TransportCoreInit();
+TK_API(void) TransportCoreDestroy();
+TK_API(int32_t) TransportCoreCreateTask(const TransportCoreTaskContext &);
+TK_API(void) TransportCoreStartTask(int32_t);
+TK_API(void) TransportCoreStopTask(int32_t);
+TK_API(void) TransportCorePauseTask(int32_t);
+TK_API(void) TransportCoreResumeTask(int32_t);
+TK_API(int64_t) TransportCoreReadData(int32_t, int32_t, size_t, size_t, char *);
+TK_API(void) TransportCoreGetProxyURL(int32_t, char *, size_t);
+TK_API(void)
+TransportCoreGetErrorString(TransportCoreErrorCode, char *, size_t);
 
 #ifdef __cplusplus
 }

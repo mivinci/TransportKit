@@ -1,7 +1,7 @@
 #pragma once
+#include <exception>
 #include <functional>
 #include <utility>
-#include <exception>
 
 #include "TX/Assert.h"
 #include "TX/Memory.h"
@@ -95,8 +95,16 @@ class TX_NODISCARD Thread final {
 #endif
   }
 
+  TX_NODISCARD Id GetId() const {
+#ifdef _WIN32
+    return handle_;
+#else
+    return Id(tid_);
+#endif
+  }
+
   static Own<Thread> Spawn(Func f, const String &name = "") {
-    return {new Thread(std::move(f), name)};
+    return Own(new Thread(std::move(f), name));
   }
 
  private:

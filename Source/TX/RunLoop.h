@@ -10,7 +10,7 @@
 #include "TX/Time.h"
 
 namespace TX {
-class RunLoop final : public RefCounted<RunLoop> {
+class RunLoop final : public AtomicRefCounted<RunLoop> {
  public:
   enum class Status { Finished, Timeout, Stopped };
   enum class Activity : uint8_t {
@@ -65,30 +65,37 @@ class RunLoop final : public RefCounted<RunLoop> {
 
   class Timer {
    public:
+    enum Repeat {
+      kTimerRepeatNever = 0,
+      kTimerRepeatAlways = UINT64_MAX,
+    };
     explicit Timer(const Duration timeout, const Duration period = -1,
-                   const uint64_t repeat = 0)
+                   const uint64_t repeat = kTimerRepeatNever,
+                   const StringView &name = "Timer")
         : deadline_(Time::Now() + timeout),
           period_(period),
           repeat_(repeat),
-          canceled_(false) {}
-    virtual ~Timer() = default;
-    virtual void OnTimeout(RunLoop &, RefPtr<Scope> &) {}
+          tick_(0),
+          name_(name),
+          alive_(true) {}
 
-    bool operator<(const Timer &other) const {
-      return deadline_ > other.deadline_;
-    }
+    virtual ~Timer() { Cancel(); }
+    virtual void OnTimeout(RunLoop &, RefPtr<Scope> &) {}
+    TX_NODISCARD Tick GetTick() const { return tick_; }
 
    private:
     friend RunLoop;
-    void Cancel() { canceled_ = true; }
+    void Cancel() { alive_ = false; }
 
     Time deadline_;
     Duration period_;
     uint64_t repeat_;
-    bool canceled_ : 1;
+    Tick tick_;
+    StringView name_;
+    std::atomic<bool> alive_;
   };
 
-  class Scope final : public RefCounted<Scope> {
+  class Scope final : public AtomicRefCounted<Scope> {
    public:
     explicit Scope(const StringView &name, RunLoop *run_loop)
         : name_(name), run_loop_(run_loop) {}
@@ -96,17 +103,24 @@ class RunLoop final : public RefCounted<RunLoop> {
     TX_NODISCARD Duration Timeout(const Time &now);
     static StringView Default;
 
+    struct CompareTimerPtr {
+      bool operator()(const Timer *t1, const Timer *t2) const {
+        return t2->deadline_ < t1->deadline_;
+      }
+    };
+
    private:
     friend RunLoop;
     struct Shared {
       bool stopped = false;
       std::unordered_set<Observer *> observer_set_;
       std::unordered_set<Source *> source_set_;
-      std::priority_queue<Timer *> timer_heap_;
+      std::priority_queue<Timer *, std::vector<Timer *>, CompareTimerPtr>
+          timer_heap_;
       std::queue<FnOnce> block_queue_;
     };
+    Mutex<Shared> shared_{};
     StringView name_;
-    Mutex<Shared> shared_;
     RunLoop *run_loop_;
   };
 
@@ -138,7 +152,7 @@ class RunLoop final : public RefCounted<RunLoop> {
   }
 
   static void ClearGlobalContext();
-  static Ref<RunLoop> Spawn(const String &name = "RunLoop");
+  static Own<Thread> SpawnThread(const String &name = "TXRunLoop");
   static Ref<RunLoop> FromThread(const Thread::Id &id);
   static Ref<RunLoop> Current() { return FromThread(Thread::Current()); }
   static Ref<RunLoop> Main() { return FromThread(Thread::Main()); }

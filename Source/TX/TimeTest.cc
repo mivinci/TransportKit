@@ -58,4 +58,20 @@ TEST(TimeTest, Format) {
     EXPECT_EQ(output, c->output);
   }
 }
+
+TEST(TimeTest, Arithmetic) {
+  // without monotonic
+  Time t1(1, 0);
+  Time t2 = t1 + 0_s;
+  EXPECT_EQ(t2.Unix(), 1);
+  t2 = t1 + 1_s;
+  EXPECT_EQ(t2.Unix(), 2);
+
+  // with monotonic
+  t1 = Time::Now();
+  t2 = t1 + 0_s;
+  EXPECT_EQ(t1.UnixNano(), t2.UnixNano());
+  t2 = t1 + 1_s;
+  EXPECT_EQ(t2 - t1, 1_s);
+}
 }  // namespace TX

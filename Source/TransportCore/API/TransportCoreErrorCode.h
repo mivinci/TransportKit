@@ -3,8 +3,9 @@
 
 enum TransportCoreErrorCode {
   kTransportCoreErrorCodeNone = 0,
-  kTransportCoreErrorCodeUnknown,
   kTransportCoreErrorCodeNetwork,
+
+  kTransportCoreErrorCodeUnknown = 99999999,
 };
 
 #endif  // TRANSPORT_CORE_ERROR_CODE_H_

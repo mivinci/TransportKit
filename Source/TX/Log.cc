@@ -45,9 +45,14 @@ Logger::Reporter *Logger::reporter_ = &GLOBAL_REPORTER;
 Logger::Formatter *Logger::formatter_ = &GLOBAL_FORMATTER;
 
 void Logger::Log::clean() {
+  const auto pos = file_.find_last_of('/');
+  if (pos != std::string::npos) {
+    file_ = file_.substr(pos + 1);
+  } else {
 #ifdef TK_SOURCE_DIR
-  file_ = file_.substr(sizeof TK_SOURCE_DIR);
+    file_ = file_.substr(sizeof TK_SOURCE_DIR);
 #endif
+  }
 }
 
 void Logger::Log::output() const {

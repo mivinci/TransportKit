@@ -1,6 +1,6 @@
-enable_testing()
+ENABLE_TESTING()
 
-set(TX_HEADERS
+SET(Headers
   Addr.h
   Assert.h
   Bits.h
@@ -21,6 +21,7 @@ set(TX_HEADERS
   Result.h
   Ref.h
   RunLoop.h
+  RunLoopThread.h
   Socket.h
   Span.h
   String.h
@@ -42,7 +43,7 @@ set(TX_HEADERS
   runtime/Task.h
 )
 
-set(TX_SOURCES
+SET(Sources
   Addr.cc
   Log.cc
   RunLoop.cc
@@ -50,7 +51,7 @@ set(TX_SOURCES
   runtime/BlockingPool.cc
 )
 
-set(TX_TEST_SOURCES
+SET(TestSources
   AddrTest.cc
   LogTest.cc
   ThreadTest.cc
@@ -64,11 +65,17 @@ set(TX_TEST_SOURCES
   runtime/SingleThreadSchedulerTest.cc
 )
 
-add_library(TX ${TX_HEADERS} ${TX_SOURCES})
-target_link_libraries(TX PUBLIC fmt::fmt)
+SET(Files ${Headers} ${Sources} ${TestSources})
 
-add_executable(TX_Test ${TX_TEST_SOURCES})
-target_link_libraries(TX_Test TX GTest::gtest_main)
+ADD_LIBRARY(TX ${Headers} ${Sources})
+TARGET_LINK_LIBRARIES(TX PUBLIC fmt::fmt)
 
-include(GoogleTest)
-gtest_discover_tests(TX_Test)
+ADD_EXECUTABLE(TX_Test ${TestSources})
+TARGET_LINK_LIBRARIES(TX_Test TX GTest::gtest_main)
+
+INCLUDE(GoogleTest)
+GTEST_DISCOVER_TESTS(TX_Test)
+
+SOURCE_GROUP(TREE ${CMAKE_CURRENT_SOURCE_DIR}
+  FILES ${Files}
+)

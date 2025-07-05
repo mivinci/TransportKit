@@ -178,6 +178,7 @@ class RefPtr {
   bool operator==(std::nullptr_t) const { return t_ == nullptr; }
   bool operator<(const RefPtr &other) const { return t_ < other.t_; }
   bool operator!() const { return !t_; }
+
   T *operator->() {
     TX_ASSERT(t_);
     return t_;
@@ -186,6 +187,9 @@ class RefPtr {
     TX_ASSERT(t_);
     return *t_;
   }
+
+  explicit operator bool() const { return !!t_; }
+
   void swap(RefPtr &other) noexcept { std::swap(t_, other.t_); }
   T *get() const { return t_; }
   TX_NODISCARD T *leakRef() { return std::exchange(t_, nullptr); }
@@ -207,7 +211,7 @@ void swap(Ref<T> &a, Ref<T> &b) noexcept {
 
 template <class T>
 RefPtr<T> adoptRef(T *t) {
-  T::adopted(t);
+  if (t) T::adopted(t);
   return RefPtr(t);
 }
 

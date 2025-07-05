@@ -15,10 +15,9 @@ struct RunLoopGlobalContext {
 
 static Mutex<RunLoopGlobalContext> runLoopGlobalContext;
 
-// Ref<RunLoop> RunLoop::Spawn(const String &name) {
-//   Thread::Spawn([]() {  });
-// }
-
+Own<Thread> RunLoop::SpawnThread(const String &name) {
+  return Thread::Spawn([] { Current()->Run(); }, name);
+}
 
 Ref<RunLoop> RunLoop::FromThread(const Thread::Id &id) {
   auto global_context = runLoopGlobalContext.Lock();
@@ -37,8 +36,8 @@ RefPtr<RunLoop::Scope> RunLoop::GetScopeLocked(const StringView &name,
       it != guard->scope_map_.end())
     return it->second;
   if (!create) return nullptr;
-  auto scope = new Scope(name, this);
-  guard->scope_map_.emplace(name, scope);
+  auto scope = adoptRef(new Scope(name, this));
+  guard->scope_map_.insert({name, scope});
   return scope;
 }
 
@@ -53,7 +52,7 @@ RunLoop::Status RunLoop::Run(const uint64_t repeat, const Duration timeout,
   TX_ASSERT(thread_id_ == Thread::Current(),
             "RunLoop must be running on the thread it is created.");
   auto guard = shared_.Lock();
-  RefPtr<Scope> scope = GetScopeLocked(scope_name, false, guard);
+  RefPtr<Scope> scope = GetScopeLocked(scope_name, true, guard);
   if (!scope) return Status::Finished;
   const RefPtr<Scope> previous_scope = guard->current_scope_;
   guard->current_scope_ = scope;
@@ -122,7 +121,15 @@ RunLoop::Status RunLoop::Schedule(RefPtr<Scope> &scope,
   return Status::Finished;
 }
 
-void RunLoop::Stop() { stopped_.store(true); }
+void RunLoop::Stop() {
+  //  {
+  //    auto global_context = runLoopGlobalContext.Lock();
+  //    global_context->run_loop_map_.erase(thread_id_);
+  //  }
+  stopped_.store(true);
+  // RunLoop may be blocking on Wait, we have to wake it up.
+  Wakeup();
+}
 
 void RunLoop::Wakeup() { cond_.NotifyOne(); }
 
@@ -134,6 +141,7 @@ bool RunLoop::Wait(const Duration timeout) {
 void RunLoop::AddSource(Source *source, const StringView &scope_name) {
   auto guard = shared_.Lock();
   RefPtr<Scope> scope = GetScopeLocked(scope_name, true, guard);
+  drop(guard);
   TX_ASSERT(!!scope, "GetModeLocked failed to create a new RunLoop scope");
   scope->shared_.Lock()->source_set_.insert(source);
   source->OnSchedule(*this, scope);
@@ -142,6 +150,7 @@ void RunLoop::AddSource(Source *source, const StringView &scope_name) {
 void RunLoop::RemoveSource(Source *source, const StringView &scope_name) {
   auto guard = shared_.Lock();
   RefPtr<Scope> scope = GetScopeLocked(scope_name, false, guard);
+  drop(guard);
   if (!scope) return;
   scope->shared_.Lock()->source_set_.erase(source);
   source->OnCancel(*this, scope);
@@ -150,6 +159,7 @@ void RunLoop::RemoveSource(Source *source, const StringView &scope_name) {
 void RunLoop::AddTimer(Timer *timer, const StringView &scope_name) {
   auto guard = shared_.Lock();
   RefPtr<Scope> scope = GetScopeLocked(scope_name, true, guard);
+  drop(guard);
   TX_ASSERT(!!scope, "GetModeLocked failed to create a new RunLoop scope");
   scope->shared_.Lock()->timer_heap_.push(timer);
 }
@@ -161,6 +171,7 @@ void RunLoop::RemoveTimer(Timer *timer, const StringView &) {
 void RunLoop::AddObserver(Observer *observer, const StringView &scope_name) {
   auto guard = shared_.Lock();
   RefPtr<Scope> scope = GetScopeLocked(scope_name, true, guard);
+  drop(guard);
   TX_ASSERT(!!scope, "GetModeLocked failed to create a new RunLoop scope");
   scope->shared_.Lock()->observer_set_.insert(observer);
 }
@@ -168,6 +179,7 @@ void RunLoop::AddObserver(Observer *observer, const StringView &scope_name) {
 void RunLoop::RemoveObserver(Observer *observer, const StringView &scope_name) {
   auto guard = shared_.Lock();
   RefPtr<Scope> scope = GetScopeLocked(scope_name, false, guard);
+  drop(guard);
   if (!scope) return;
   scope->shared_.Lock()->observer_set_.erase(observer);
 }
@@ -176,6 +188,7 @@ void RunLoop::PerformBlock(std::function<void()> func,
                            const StringView &scope_name) {
   auto guard = shared_.Lock();
   RefPtr<Scope> scope = GetScopeLocked(scope_name, true, guard);
+  drop(guard);
   TX_ASSERT(!!scope, "GetModeLocked failed to create a new RunLoop scope");
   scope->shared_.Lock()->block_queue_.push(std::move(func));
 }
@@ -203,12 +216,15 @@ void RunLoop::DoTimers(RefPtr<Scope> scope) {
   Timer *timer = scope_guard->timer_heap_.top();
   scope_guard->timer_heap_.pop();
   TX_ASSERT(timer);
+  if (!timer->alive_) return;
   timer->OnTimeout(*this, scope);
-  if (timer->repeat_-- <= 0) return;
+  timer->tick_++;
+  if (timer->repeat_ == timer->tick_ - 1) return;
   if (timer->period_ > 0) {
-    timer->deadline_ = Time::After(timer->period_);
+    timer->deadline_ = Time::Now() + timer->period_;
     scope_guard->timer_heap_.push(timer);
-    TX_DEBUG("timer refreshed, repeat: %d", timer->repeat_);
+    TX_DEBUG("timer refreshed, tick/repeat: %lu/%lu", timer->tick_,
+             timer->repeat_);
   }
 }
 
@@ -241,9 +257,17 @@ uint64_t RunLoop::Source::SignaledTime() const {
 }
 
 Duration RunLoop::Scope::Timeout(const Time &now) {
+  int retries = 0;
   auto guard = shared_.Lock();
-  if (guard->timer_heap_.empty()) return Duration::FOREVER;
-  return guard->timer_heap_.top()->deadline_ - now;
+retry:
+  if (guard->timer_heap_.empty() || retries > 5) return Duration::FOREVER;
+  const auto timer = guard->timer_heap_.top();
+  if (!timer->alive_) {
+    guard->timer_heap_.pop();
+    retries++;
+    goto retry;
+  }
+  return timer->deadline_ - now;
 }
 
 void RunLoop::ClearGlobalContext() { runLoopGlobalContext.Lock()->Clear(); }

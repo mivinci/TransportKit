@@ -54,6 +54,8 @@ class Duration final {
   explicit operator double() const { return static_cast<double>(inner_); }
   explicit operator float() const { return static_cast<float>(inner_); }
 
+  Duration operator-() const { return -inner_; }
+
   Duration operator+(const Duration &other) const {
     return inner_ + other.inner_;
   }
@@ -196,7 +198,9 @@ class Time final {
     return Time(sec, nsec);
   }
 
-  Time operator+(const Duration d) {
+  Time operator+(const Duration d) const {
+    if (d == 0) return *this;
+    Time t = *this;
     int64_t d_sec = d.inner_ / 1000000000;
     int32_t t_nsec = nsec() + static_cast<int32_t>(d.inner_ % 1000000000);
     if (t_nsec >= 1000000000) {
@@ -206,28 +210,28 @@ class Time final {
       d_sec--;
       t_nsec += 1000000000;
     }
-    wall_ = (wall_ & (~kNSecMask)) | static_cast<uint64_t>(t_nsec);
-    addSec(d_sec);
-    if ((wall_ & kHasMono) != 0) {
-      const int64_t te = ext_ + d.inner_;
-      if (d.inner_ < 0 && te > ext_ || d.inner_ > 0 && te < ext_) {
+    t.wall_ = (t.wall_ & (~kNSecMask)) | static_cast<uint64_t>(t_nsec);
+    t.addSec(d_sec);
+    if ((t.wall_ & kHasMono) != 0) {
+      const int64_t te = t.ext_ + d.inner_;
+      if ((d.inner_ < 0 && te > t.ext_) || (d.inner_ > 0 && te < t.ext_)) {
         // Monotonic clock reading now out of range; degrade to wall-only
-        stripMono();
+        t.stripMono();
       } else {
-        ext_ = te;
+        t.ext_ = te;
       }
     }
-    return *this;
+    return t;
   }
 
-  Time operator-(const Duration d) { return operator+(-(d.inner_)); }
+  Time operator-(const Duration d) const { return operator+(-d.inner_); }
 
   Duration operator-(const Time &other) const {
     if ((wall_ & other.wall_ & kHasMono) != 0) return subMono(ext_, other.ext_);
     const Duration d =
-        (sec() + other.sec()) * 1000000000 + (nsec() + other.nsec());
+        (sec() - other.sec()) * 1000000000 + (nsec() - other.nsec());
     // Check for overflow or underflow.
-    Time u = other;
+    const Time u = other;
     if (u + d == *this) return d;
     if (*this < u) return INT64_MIN;
     return INT64_MAX;
@@ -259,10 +263,10 @@ class Time final {
       zone_set = true;
     }
 
-    struct tm tm {};
+    struct tm tm{};
     TM(&tm);
 
-    struct DateTime dt {};
+    struct DateTime dt{};
     dt.year = tm.tm_year + 1900;
     dt.month = static_cast<Month>(tm.tm_mon + 1);
     dt.day = tm.tm_mday;
@@ -279,7 +283,7 @@ class Time final {
 
   TX_NODISCARD String Format(const StringView &layout = RFC3339) const {
     char buf[64];
-    struct tm tm {};
+    struct tm tm{};
     TM(&tm);
 
     if (layout == RFC3339) {
@@ -322,7 +326,7 @@ class Time final {
       const auto sec = static_cast<int64_t>((wall_ << 1) >> (kNSecShift + 1));
       const int64_t t_sec = sec + d;
       if (0 <= t_sec && t_sec <= (1LL << 33) - 1) {
-        wall_ = wall_ & kNSecMask | static_cast<uint64_t>(t_sec) << kNSecShift |
+        wall_ = (wall_ & kNSecMask) | (static_cast<uint64_t>(t_sec) << kNSecShift) |
                 kHasMono;
         return;
       }
@@ -331,7 +335,7 @@ class Time final {
     }
     // Check if the sum of t.ext and d overflows and handle it properly.
     const int64_t sum = ext_ + d;
-    if ((sum < ext_) == (d > 0))
+    if ((sum > ext_) == (d > 0))
       ext_ = sum;
     else if (d > 0)
       ext_ = INT64_MAX;
@@ -339,7 +343,8 @@ class Time final {
       ext_ = -INT64_MAX;
   }
 
-  TX_NODISCARD int64_t subMono(const int64_t t, const int64_t u) const { /* NOLINT(readability-convert-member-functions-to-static) */
+  TX_NODISCARD int64_t subMono(const int64_t t, const int64_t u)
+      const { /* NOLINT(readability-convert-member-functions-to-static) */
     const int64_t d = t - u;
     if (d < 0 && t > u) return INT64_MAX;
     if (d > 0 && t < u) return INT64_MIN;
@@ -349,7 +354,7 @@ class Time final {
   void stripMono() {
     if ((wall_ & kHasMono) != 0) {
       ext_ = sec();
-      wall_ &= kHasMono;
+      wall_ &= kNSecMask;
     }
   }
 

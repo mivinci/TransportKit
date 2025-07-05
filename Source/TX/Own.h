@@ -7,7 +7,7 @@ template <class T>
 class Own {
  public:
   Own() : t_(nullptr) {}
-  Own(T *t) : t_(t) {} // NOLINT(*-explicit-constructor)
+  explicit Own(T *t) : t_(t) {}
   TX_DISALLOW_COPY(Own)
   Own(Own &&other) noexcept {
     t_ = other.t_;

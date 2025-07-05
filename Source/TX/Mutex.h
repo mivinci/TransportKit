@@ -109,6 +109,7 @@ class MutexGuard {
       // A NULL lock_ means that this MutexGuard has been moved to another
       // MutexGuard, in which case we must avoid a double-unlock on lock_.
       lock_->Unlock();
+      lock_ = nullptr;
     }
   }
   T &operator*() { return lock_->t_; }

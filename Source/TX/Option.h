@@ -1,16 +1,24 @@
 #pragma once
 
+#include "TX/Platform.h"
+#if __cplusplus >= 201703L
+#include <optional>
+#else
 #include <utility>
 
 #include "TX/Log.h"
-#include "TX/Platform.h"
+#endif
 
 namespace TX {
-
+#if __cplusplus >= 201703L
+template <class T>
+using Option = std::optional<T>;
+static std::nullopt_t None = std::nullopt;
+#else
 class None {};
 static constexpr None None;
 
-template <typename T>
+template <class T>
 class Option {
  public:
   Option() : some_(false) {}
@@ -56,7 +64,7 @@ class Option {
 
   T &Unwrap() {
     if (!some_) {
-      TX_FATAL("called unwrap on None");
+      TX_THROW("called unwrap on None");
       TX_UNREACHABLE();
     }
     return t_;
@@ -67,8 +75,6 @@ class Option {
 
   T Take() {
     if (!some_) return None;
-    // auto t = std::move(*this);
-    // *this = None;
     return std::exchange(*this, None);
   }
 
@@ -78,24 +84,35 @@ class Option {
     T t_;
   };
 };
+#endif
 
 template <typename T>
 constexpr Option<T> Some(T &t) {
   return t;
 }
 
-#define TX_IF_SOME(name, expr)                                  \
-  TX_SILENCE_DANGLING_ELSE_BEGIN                                \
-  if (auto TX_UNIQUE_NAME(_##name) = expr)                      \
-    if (auto &name = TX_UNIQUE_NAME(_##name).Unwrap(); false) { \
-    } else                                                      \
+#if __cplusplus >= 201703L
+#define TX_IS_SOME(x) ((x).has_value())
+#define TX_UNWRAP(x) ((x).value())
+#define TX_UNWRAP_OR(x, y) ((x).value_or(y))
+#else
+#define TX_IS_SOME(x) ((x).IsSome())
+#define TX_UNWRAP(x) ((x).Unwrap())
+#define TX_UNWRAP_OR(x, y) ((x).UnwrapOr(y))
+#endif
+
+#define TX_IF_SOME(name, expr)                                           \
+  TX_SILENCE_DANGLING_ELSE_BEGIN                                         \
+  if (auto TX_UNIQUE_NAME(_##name) = expr)                               \
+    if (auto &name = TX_UNWRAP(TX_UNIQUE_NAME(_##name)); false) { \
+    } else                                                               \
       TX_SILENCE_DANGLING_ELSE_END
 
-#define TX_IF_SOME_CONST(name, expr)                                  \
-  TX_SILENCE_DANGLING_ELSE_BEGIN                                      \
-  if (auto TX_UNIQUE_NAME(_##name) = expr)                            \
-    if (const auto &name = TX_UNIQUE_NAME(_##name).Unwrap(); false) { \
-    } else                                                            \
+#define TX_IF_SOME_CONST(name, expr)                                           \
+  TX_SILENCE_DANGLING_ELSE_BEGIN                                               \
+  if (auto TX_UNIQUE_NAME(_##name) = expr)                                     \
+    if (const auto &name = TX_UNWRAP(TX_UNIQUE_NAME(_##name)); false) { \
+    } else                                                                     \
       TX_SILENCE_DANGLING_ELSE_END
 
 }  // namespace TX

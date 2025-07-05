@@ -8,7 +8,7 @@ option(TK_ENABLE_TRACE "Enable trace" OFF)
 option(TK_USE_FMTLIB "Use fmt lib" OFF)
 
 # Set up compile definitions
-add_definitions(-DBUILD_TK -Dfvisibility=hidden)
+add_definitions(-DTK_EXPORT -Dfvisibility=hidden)
 if (TK_USE_FMTLIB)
   add_definitions(-DUSE_FMTLIB)
 endif ()
