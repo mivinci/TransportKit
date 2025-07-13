@@ -1,0 +1,4 @@
+#include "KFC/Disposer.h"
+
+KFC_NAMESPACE_BEG
+KFC_NAMESPACE_END
