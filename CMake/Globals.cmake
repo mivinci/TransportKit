@@ -1,0 +1,6 @@
+macro(add_definitions_if_option __option)
+  if(${__option})
+    add_compile_definitions(${ARGN})
+    message(STATUS "Add compile definition ${ARGN}")
+  endif()
+endmacro()
