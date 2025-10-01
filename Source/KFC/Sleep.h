@@ -6,6 +6,7 @@
 #else
 #include <unistd.h>
 #define KFC_SLEEP(sec) sleep(sec)
+#define KFC_SLEEP_US(usec) usleep(usec)
 #endif
 
 namespace KFC {}

@@ -78,6 +78,25 @@ SET(TestSources
   Testing.cc
 )
 
+IF (UNIX)
+  SET(UnixHeaders
+    Unix/EventPort.h
+    Unix/Fd.h
+  )
+  SET(UnixSources
+    Unix/EventPort.cc
+    Unix/Fd.cc
+  )
+  SET(UnixTestSources
+    Unix/EventPort_Test.cc
+  )
+  LIST(APPEND Headers ${UnixHeaders})
+  LIST(APPEND Sources ${UnixSources})
+  LIST(APPEND TestSources ${UnixTestSources})
+ELSEIF (WIN32)
+
+ENDIF (UNIX)
+
 SET(Files ${Headers} ${Sources} ${TestSources})
 
 ADD_LIBRARY(KFC ${Headers} ${Sources})
@@ -86,7 +105,7 @@ ADD_EXECUTABLE(KFC_Test ${TestSources})
 TARGET_LINK_LIBRARIES(KFC_Test KFC GTest)
 
 SOURCE_GROUP(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${Files})
-get_target_property(KFC_CXX_STANDARD KFC CXX_STANDARD)
-get_target_property(KFC_Test_CXX_STANDARD KFC_Test CXX_STANDARD)
-message(STATUS "[KFC] C艹 standard: ${KFC_CXX_STANDARD}")
-message(STATUS "[KFC_Test] C艹 standard: ${KFC_Test_CXX_STANDARD}")
+GET_TARGET_PROPERTY(KFC_CXX_STANDARD KFC CXX_STANDARD)
+GET_TARGET_PROPERTY(KFC_Test_CXX_STANDARD KFC_Test CXX_STANDARD)
+MESSAGE(STATUS "[KFC] C艹 standard: ${KFC_CXX_STANDARD}")
+MESSAGE(STATUS "[KFC_Test] C艹 standard: ${KFC_Test_CXX_STANDARD}")
