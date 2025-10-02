@@ -1,5 +1,5 @@
-#include "KFC/Testing.h"
 #include "KFC/Exception.h"
+#include "KFC/Testing.h"
 
 int main(int argc, char **argv) {
   testing::InitGoogleTest(&argc, argv);

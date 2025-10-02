@@ -76,8 +76,7 @@ SET(TestSources
   Result_Test.cc
   OneOf_Test.cc
   Own_Test.cc
-
-  Testing.cc
+  Testing_Main.cc
 )
 
 IF (UNIX)
