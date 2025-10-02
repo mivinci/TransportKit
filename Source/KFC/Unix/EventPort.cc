@@ -4,7 +4,7 @@
 KFC_NAMESPACE_BEG
 
 #if KFC_USE_KQUEUE
-UnixEventPort::UnixEventPort() {
+UnixEventPort::UnixEventPort() : m_timer(Time::now()) {
   int kqueueFd;
 #ifdef __NetBSD__
   kqueueFd = kqueue1();
@@ -15,23 +15,27 @@ UnixEventPort::UnixEventPort() {
   KFC_CHECK_SYSCALL(fcntl(kqueueFd, F_SETFD, FD_CLOEXEC));
 #endif
 
-  struct kevent event;
+  struct kevent event; // NOLINT(*-pro-type-member-init)
   EV_SET(&event, 0, EVFILT_USER, EV_ADD | EV_CLEAR, 0, 0, nullptr);
   KFC_CHECK_SYSCALL(kevent(kqueueFd, &event, 1, nullptr, 0, nullptr));
   m_kqueueFd = kqueueFd;
 }
 
-UnixEventPort::~UnixEventPort() noexcept(false) {}
-
 void UnixEventPort::wake() const {
-  struct kevent event;
+  struct kevent event; // NOLINT(*-pro-type-member-init)
   EV_SET(&event, 0, EVFILT_USER, 0, NOTE_TRIGGER, 0, nullptr);
   KFC_CHECK_SYSCALL(kevent(m_kqueueFd, &event, 1, nullptr, 0, nullptr));
 }
 
 bool UnixEventPort::poll() {
-  // TODO: Ask timer for a timeout
-  return doKqueueWait(nullptr);
+  struct timespec ts, *pts = nullptr; // NOLINT(*-pro-type-member-init)
+  KFC_IF_SOME_CONST(t, m_timer.advanceTo(Time::now())) {
+    const Clock::TimePoint tp = t.toTimePoint();
+    ts.tv_sec = tp.sec;
+    ts.tv_nsec = tp.nsec;
+    pts = &ts;
+  }
+  return doKqueueWait(pts);
 }
 
 bool UnixEventPort::doKqueueWait(const struct timespec *timeout) const {

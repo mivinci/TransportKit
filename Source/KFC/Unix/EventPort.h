@@ -2,6 +2,7 @@
 
 #include "KFC/Async.h"
 #include "KFC/Preclude.h"
+#include "KFC/Timer.h"
 #include "KFC/Unix/Fd.h"
 
 #if defined(__APPLE__)
@@ -20,7 +21,6 @@ class UnixEventPort final : public EventPort {
 public:
   class FdObserver;
   explicit UnixEventPort();
-  ~UnixEventPort() noexcept(false) override;
   bool poll() override;
   void wake() const override;
 
@@ -32,6 +32,7 @@ private:
   bool doEpollWait(struct timespec *ts);
   Fd m_epollFd;
 #endif
+  Timer m_timer;
   friend FdObserver;
 };
 

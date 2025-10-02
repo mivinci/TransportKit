@@ -33,6 +33,7 @@ SET(Headers
   ThreadPool.h
   Trace.h
   Time.h
+  Timer.h
   Thread.h
   OneOf.h
   URL.h
@@ -50,6 +51,7 @@ SET(Sources
   IOBuf.cc
   Log.cc
   Time.cc
+  Timer.cc
   Thread.cc
   StackTrace.cc
   String.cc

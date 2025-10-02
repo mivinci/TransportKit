@@ -1,7 +1,5 @@
 #include "KFC/Unix/Fd.h"
-
 #include "KFC/Assert.h"
-
 #include <unistd.h>
 
 KFC_NAMESPACE_BEG
