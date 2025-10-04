@@ -14,7 +14,6 @@ SET(Headers
   Function.h
   IOBuf.h
   List.h
-  Log.h
   Memory.h
   Mutex.h
   Option.h
@@ -49,7 +48,6 @@ SET(Sources
   Exception.cc
   Format.cc
   IOBuf.cc
-  Log.cc
   Time.cc
   Timer.cc
   Thread.cc
@@ -65,7 +63,6 @@ SET(TestSources
   Addr_Test.cc
   Async_Test.cc
   List_Test.cc
-  Log_Test.cc
   Thread_Test.cc
   Ref_Test.cc
   StackTrace_Test.cc

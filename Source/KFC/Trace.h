@@ -1,11 +1,13 @@
 #pragma once
 
-#include "KFC/Log.h"
 #include "KFC/Preclude.h"
 #include "KFC/String.h"
 #include "KFC/Time.h"
 
 #if defined(ENABLE_TRACE)
+// TODO
+#define KFC_TRACE(...)
+
 #define KFC_TRACE_START(k)                                                                         \
   do {                                                                                             \
     KFC::Trace trace;                                                                              \
@@ -38,6 +40,7 @@
 #endif
 
 KFC_NAMESPACE_BEG
+
 struct Trace {
   String key;
   Time start;
@@ -48,4 +51,5 @@ bool GlobalTraceStackEmpty();
 void GlobalTraceStackPush(const Trace &trace);
 void GlobalTraceStackPop();
 Trace &GlobalTraceStackTop();
+
 KFC_NAMESPACE_END

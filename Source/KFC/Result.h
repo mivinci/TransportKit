@@ -3,7 +3,6 @@
 #include <functional>
 
 #include "KFC/Assert.h"
-#include "KFC/Log.h"
 #include "KFC/OneOf.h"
 #include "KFC/Option.h"
 

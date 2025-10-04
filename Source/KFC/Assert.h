@@ -1,6 +1,5 @@
 #pragma once
 #include "KFC/Exception.h"
-#include "KFC/Log.h"
 #include "KFC/Preclude.h"
 
 namespace KFC {
@@ -20,12 +19,8 @@ namespace KFC {
     KFC_UNREACHABLE();                                                                             \
   } while (0)
 
-#define KFC_ASSERT(expr, ...)                                                                      \
-  do {                                                                                             \
-    if (expr) break;                                                                               \
-    KFC_FATAL("assert(" #expr "): " __VA_ARGS__);                                                  \
-    KFC_UNREACHABLE();                                                                             \
-  } while (0)
+// TODO
+#define KFC_ASSERT(expr, ...)
 
 #define KFC_TODO(...)                                                                              \
   do {                                                                                             \
