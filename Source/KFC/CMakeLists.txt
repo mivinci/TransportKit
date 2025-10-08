@@ -79,11 +79,11 @@ SET(TestSources
 IF (UNIX)
   SET(UnixHeaders
     Unix/EventPort.h
-    Unix/Fd.h
+    Unix/OwnFd.h
   )
   SET(UnixSources
     Unix/EventPort.cc
-    Unix/Fd.cc
+    Unix/OwnFd.cc
   )
   SET(UnixTestSources
     Unix/EventPort_Test.cc

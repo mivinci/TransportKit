@@ -3,7 +3,7 @@
 #include "KFC/Async.h"
 #include "KFC/Preclude.h"
 #include "KFC/Timer.h"
-#include "KFC/Unix/Fd.h"
+#include "KFC/Unix/OwnFd.h"
 
 #if defined(__APPLE__)
 #include <sys/event.h>
@@ -27,10 +27,10 @@ public:
 private:
 #if KFC_USE_KQUEUE
   bool doKqueueWait(const struct timespec *timeout) const;
-  Fd m_kqueueFd;
+  OwnFd m_kqueueFd;
 #elif KFC_USE_EPOLL
   bool doEpollWait(struct timespec *ts);
-  Fd m_epollFd;
+  OwnFd m_epollFd;
 #endif
   Timer m_timer;
   friend FdObserver;
