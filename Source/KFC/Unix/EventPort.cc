@@ -148,4 +148,6 @@ Promise<void> UnixEventPort::FdObserver::whenUrgentDataAvailable() {
   return std::move(par.promise);
 }
 
+Timer &UnixEventPort::getTimer() { return m_timer; }
+
 KFC_NAMESPACE_END

@@ -403,11 +403,7 @@ void XThreadEventBase::setDisconnected() const {
 } // namespace _
 
 Executor::Executor(EventLoop &loop) : m_shared(loop) {}
-
-Executor::~Executor() noexcept(false) {
-  // TODO: cancel all cross-thread events
-}
-
+Executor::~Executor() noexcept(false) = default;
 Ref<Executor> Executor::create(EventLoop &loop) { return adoptRef(*new Executor(loop)); }
 
 bool Executor::poll() {

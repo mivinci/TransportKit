@@ -23,6 +23,7 @@ public:
   explicit UnixEventPort();
   bool poll() override;
   void wake() const override;
+  Timer &getTimer();
 
 private:
 #if KFC_USE_KQUEUE

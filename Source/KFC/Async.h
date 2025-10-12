@@ -350,15 +350,16 @@ public:
 
 void wait(OwnPromiseNode &node, PromiseResultBase &result, const WaitScope &scope);
 
+template <class T> OwnPromiseNode maybeChain(OwnPromiseNode &&node, T *) { return std::move(node); }
 template <class T> OwnPromiseNode maybeChain(OwnPromiseNode &&node, Promise<T> *) {
   return new ChainPromiseNode(std::move(node));
 }
-template <class T> OwnPromiseNode maybeChain(OwnPromiseNode &&node, T *) { return std::move(node); }
 
 template <class T> T &&maybeReturnVoid(PromiseResult<T> &&result) {
   KFC_IF_SOME(e, result.takeErr()) { throw std::move(e); }
   return std::move(result.unwrap());
 }
+
 inline void maybeReturnVoid(PromiseResult<Void> &&result) {
   KFC_IF_SOME(e, result.takeErr()) { throw std::move(e); }
   KFC_DISCARD(result.unwrap());
