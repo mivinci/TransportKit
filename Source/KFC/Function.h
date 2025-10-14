@@ -67,4 +67,11 @@ template <> struct FunctionCaller<Void, Void> {
   }
 };
 
+template <> struct FunctionCaller<Void> {
+  template <class Func> static Void apply(Func &func) {
+    func();
+    return Void{};
+  }
+};
+
 } // namespace KFC

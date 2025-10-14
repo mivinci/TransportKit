@@ -28,11 +28,11 @@ template <class T, class StaticDisposer = std::nullptr_t> class Own {
 
 public:
   KFC_DISALLOW_COPY(Own)
-  constexpr Own() : m_ptr(nullptr) {}
-  constexpr Own(T *ptr) : m_ptr(ptr) {}
+  Own() : m_ptr(nullptr) {}
+  Own(T *ptr) : m_ptr(ptr) {}
 
-  template <class U> Own(Own<U, StaticDisposer> &&other) : m_ptr(other.m_ptr) {
-    // KFC_STATIC_ASSERT_IS_BASE_OF(T, U);
+  template <class U, class = std::enable_if_t<std::is_base_of_v<T, U>>>
+  Own(Own<U, StaticDisposer> &&other) : m_ptr(other.m_ptr) {
     other.m_ptr = nullptr;
   }
 
@@ -74,17 +74,6 @@ public:
     }
   }
 
-  // template <class U> Own<U, StaticDisposer> downcast() {
-  //   // Downcasts the owned object to a subclass.
-  //   KFC_STATIC_ASSERT_IS_BASE_OF(T, U);
-  //   Own<U, StaticDisposer> sub;
-  //   if (m_ptr) {
-  //     sub.m_ptr = static_cast<U *>(m_ptr);
-  //     m_ptr = nullptr;
-  //   }
-  //   return sub;
-  // }
-
 private:
   void dispose() {
     if (T *ptrCopy = m_ptr) {
@@ -105,21 +94,19 @@ template <class T> class Own<T, std::nullptr_t> {
   // disposer than by static call.
 public:
   KFC_DISALLOW_COPY(Own)
-  constexpr Own() : m_ptr(nullptr), m_disposer(nullptr) {}
-  constexpr Own(T *ptr, Disposer *disposer) : m_ptr(ptr), m_disposer(disposer) {}
-  constexpr Own(Own &&other) noexcept : m_ptr(other.m_ptr), m_disposer(other.m_disposer) {
+  Own() : m_ptr(nullptr), m_disposer(nullptr) {}
+  Own(T *ptr, Disposer *disposer) : m_ptr(ptr), m_disposer(disposer) {}
+  Own(Own &&other) noexcept : m_ptr(other.m_ptr), m_disposer(other.m_disposer) {
     other.m_ptr = nullptr;
   }
 
-  template <class U>
-  constexpr Own(Own<U> &&other) : m_ptr(other.m_ptr), m_disposer(other.m_disposer) {
-    // KFC_STATIC_ASSERT_IS_BASE_OF(T, U);
+  template <class U, class = std::enable_if_t<std::is_base_of_v<T, U>>>
+  Own(Own<U> &&other) : m_ptr(other.m_ptr), m_disposer(other.m_disposer) {
     other.m_ptr = nullptr;
   }
 
-  template <class U> constexpr Own(U *ptr, Disposer *disposer) : m_ptr(ptr), m_disposer(disposer) {
-    // KFC_STATIC_ASSERT_IS_BASE_OF(T, U);
-  }
+  template <class U, class = std::enable_if_t<std::is_base_of_v<T, U>>>
+  Own(U *ptr, Disposer *disposer) : m_ptr(ptr), m_disposer(disposer) {}
 
   ~Own() noexcept(false) { dispose(); }
 
