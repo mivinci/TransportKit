@@ -46,6 +46,6 @@ TARGET_LINK_LIBRARIES(TransportCore PRIVATE KFC ${TK_LIBRARIES})
 TARGET_COMPILE_DEFINITIONS(TransportCore PUBLIC BUILD_TK fvisibility=hidden)
 
 ADD_EXECUTABLE(TransportCore_Test ${TransportCoreTestSources})
-TARGET_LINK_LIBRARIES(TransportCore_Test TransportCore GTest::gtest_main)
+TARGET_LINK_LIBRARIES(TransportCore_Test TransportCore)
 
 SOURCE_GROUP(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${TransportCoreAllFiles})

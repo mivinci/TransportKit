@@ -18,7 +18,6 @@ option(TK_USE_GTEST "Use GTest for unit-testing" ON)
 # Set up CMake modules
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 include(CMake/Globals.cmake)
-include(CMake/SetupGTest.cmake)
 
 # Set up dependencies
 set(TK_INCLUDE_DIRS "")
@@ -34,6 +33,12 @@ if(TK_ENABLE_HTTP)
   endif()
 endif()
 
+if(TK_USE_GTEST)
+  find_package(GTEST REQUIRED)
+  list(APPEND TK_LIBRARIES ${GTEST_LIBRARIES})
+  list(APPEND TK_INCLUDE_DIRS ${GTEST_INCLUDE_DIRS})
+  list(APPEND TK_LIBRARY_DIRS ${GTEST_LIBRARY_DIRS})
+endif()
 
 include_directories(${TK_INCLUDE_DIRS})
 link_directories(${TK_LIBRARY_DIRS})
