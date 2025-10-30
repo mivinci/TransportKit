@@ -55,7 +55,7 @@ void EventLoop::poll() {
     // No EventPort, try the executor.
     (*e).poll();
   }
-  else KFC_THROW(KFC::Exception::Kind::Logic,
+  else KFC_THROW_FATAL(KFC::Exception::Kind::Logic,
                  "Neither a poller nor an executor is set for the EventLoop");
 }
 
@@ -476,7 +476,7 @@ void Executor::sendReady(_::XThreadEventBase &event) {
     KFC_IF_SOME_CONST(p, l.m_port) { p.wake(); }
   }
   else {
-    KFC_THROW(KFC::Exception::Kind::Logic,
+    KFC_THROW_FATAL(KFC::Exception::Kind::Logic,
               "The requesting executor has exited its EventLoop without canceling the "
               "cross-thread event. This is yet an undefined behavior, so crash it now");
   }
@@ -484,7 +484,7 @@ void Executor::sendReady(_::XThreadEventBase &event) {
 
 EventLoop &Executor::getEventLoop() {
   KFC_IF_SOME(l, m_shared.lock()->m_loop) { return l; }
-  KFC_THROW(KFC::Exception::Kind::Logic, "Executor's EventLoop has exited");
+  KFC_THROW_FATAL(KFC::Exception::Kind::Logic, "Executor's EventLoop has exited");
 }
 
 bool Executor::belongsToCurrentThread() const {

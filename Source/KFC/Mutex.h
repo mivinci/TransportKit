@@ -50,7 +50,7 @@ public:
     else if (rc == EBUSY)
       locked = false;
     else
-      KFC_THROW(KFC::Exception::Kind::Syscall, "pthread_mutex_trylock: EINVAL");
+      KFC_THROW_FATAL(KFC::Exception::Kind::Syscall, "pthread_mutex_trylock: EINVAL");
 #endif
     return locked ? Some(MutexGuard<T>(this)) : None;
   }

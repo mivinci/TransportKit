@@ -17,6 +17,7 @@ static const char *exceptionKindNames[] = {
     [Exception::Kind::Std] = "StdError",
 };
 
+static KFC_THREAD_LOCAL Exception::Callback *threadLocalExceptionCallback = nullptr;
 static KFC_THREAD_LOCAL char threadLocalExceptionBuffer[2048];
 
 Exception::Exception(const Kind kind, const char *file, const int line, const char *function,
@@ -38,6 +39,8 @@ const char *Exception::what() const noexcept {
   threadLocalExceptionBuffer[sizeof(threadLocalExceptionBuffer) - 1] = '\0';
   return threadLocalExceptionBuffer;
 }
+
+String Exception::getMessage() const { return m_message; }
 
 #ifdef _WIN32
 
@@ -78,11 +81,35 @@ void printStackTraceOnCrash() {
 }
 #endif
 
+Exception::Callback::Callback() {
+  prev_ = threadLocalExceptionCallback;
+  threadLocalExceptionCallback = this;
+}
+
+Exception::Callback::~Callback() noexcept(false) { threadLocalExceptionCallback = prev_; }
+
+void Exception::Callback::onFatalException(Exception &&e) {
+  // We just simply throw the exception by default.
+  throw std::move(e);
+}
+
+void Exception::Callback::onRecoverableException(Exception &&e) { /* unused yet */ }
+
+Exception::Callback &getExceptionCallback() {
+  // The default exceptions callback must outlive all destructors, because exceptions may be thrown
+  // from destructors. Hence, we allocate a static variable and never delete it.
+  static auto *defaultExceptionCallback = new Exception::Callback();
+  Exception::Callback *callback = threadLocalExceptionCallback;
+  return callback ? *callback : *defaultExceptionCallback;
+}
+
 void throwFatalException(Exception &&e) {
-  fprintf(stderr, "%s\n", e.what());
-  const String trace = getStackTraceAsString(2);
-  fprintf(stderr, "Stack trace:\n%s", trace.c_str());
-  exit(1);
+  getExceptionCallback().onFatalException(std::move(e));
+  abort();
+}
+
+void throwRecoverableException(Exception &&e) {
+  getExceptionCallback().onRecoverableException(std::move(e));
 }
 
 KFC_NAMESPACE_END

@@ -62,6 +62,7 @@ SET(Sources
 SET(TestSources
   Addr_Test.cc
   Async_Test.cc
+  Exception_Test.cc
   List_Test.cc
   Thread_Test.cc
   Ref_Test.cc

@@ -24,7 +24,7 @@ Thread::~Thread() noexcept(false) {
 void Thread::join() {
 #ifdef _WIN32
   if (WaitForSingleObject(m_handle, INFINITE))
-    KFC_THROW("WaitForSingleObject, error code %d", GetLastError());
+    KFC_THROW_FATAL("WaitForSingleObject, error code %d", GetLastError());
   CloseHandle(m_handle);
   m_handle = nullptr;
 #else

@@ -56,7 +56,7 @@ bool UnixEventPort::doKqueueWait(const struct timespec *timeout) const {
   for (int i = 0; i < n; i++) {
     switch (events[i].filter) {
     default:
-      KFC_THROW(Exception::Syscall, "Unexpected %d", events[i].filter);
+      KFC_THROW_FATAL(Exception::Syscall, "Unexpected %d", events[i].filter);
 #ifdef EVFILT_EXCEPT
     case EVFILT_EXCEPT:
 #endif

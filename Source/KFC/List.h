@@ -48,7 +48,7 @@ public:
 
   // Removes t from the list. Safe to call while iterating over the list.
   void remove(T &t) {
-    if (!(t.*link).isLinked()) KFC_THROW(KFC::Exception::Kind::Logic, "Remove unlinked element");
+    if (!(t.*link).isLinked()) KFC_THROW_FATAL(KFC::Exception::Kind::Logic, "Remove unlinked element");
     // points the `m_next` of the previous
     *(t.*link).m_prev = (t.*link).m_next;
     // if t is not the last element, points the `m_prev` of the next to the
@@ -58,7 +58,7 @@ public:
       (next->*link).m_prev = (t.*link).m_prev;
     } else {
       if (m_tail != &(t.*link).m_next)
-        KFC_THROW(KFC::Exception::Kind::Logic, "Remove element from wrong list");
+        KFC_THROW_FATAL(KFC::Exception::Kind::Logic, "Remove element from wrong list");
       m_tail = (t.*link).m_prev;
     }
     // clears the links of t
