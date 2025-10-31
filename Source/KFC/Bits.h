@@ -47,4 +47,13 @@ inline uint64 swap(const uint64 x) {
          ((x >> 40) & 0x000000000000ff00ULL) |
          ((x >> 56) & 0x00000000000000ffULL);
 }
+
+// Returns the least significant bit position of x.
+//
+// Example:
+//
+//   CountTrailingZeros(0b00000001) // 0
+//   CountTrailingZeros(0b00010000) // 4
+//
+int countTrailingZeros(unsigned int x);
 }  // namespace KFC

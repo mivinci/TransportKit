@@ -1,4 +1,5 @@
 #include "KFC/ThreadPool.h"
+#include "KFC/Bits.h"
 #include "KFC/Memory.h"
 #include "KFC/System.h"
 
@@ -44,7 +45,6 @@ void ThreadPool::submitTask(Task &&task) {
 }
 
 void ThreadPool::runWorker(const int seq) {
-  Option<OwnThread> lastExitingThread;
   int age = 0;
   auto guarded = m_guarded.lock();
 
@@ -69,7 +69,7 @@ void ThreadPool::runWorker(const int seq) {
     if (age > guarded->maxAge && guarded->numThreads > guarded->minNumThreads) {
       // Here it is the only chance we can take the ownership of the last exiting thread so that it
       // can be `join`ed when `runWorker` returns, before it is too late...
-      lastExitingThread = std::move(guarded->lastExitingThread);
+      Option<OwnThread> lastExitingThread = std::move(guarded->lastExitingThread);
       guarded->lastExitingThread = std::move(guarded->threads[seq]);
       guarded->threads.erase(seq);
       guarded->numThreads--;
@@ -119,7 +119,7 @@ ThreadPool::Task ThreadPool::dequeueTaskLocked(MutexGuard<Guarded> &guarded) {
 }
 
 int ThreadPool::genWorkerThreadSeqLocked(MutexGuard<Guarded> &guarded) {
-  const int seq = __builtin_ctz(guarded->freeWorkerSeqSet);
+  const int seq = countTrailingZeros(guarded->freeWorkerSeqSet);
   guarded->freeWorkerSeqSet &= ~(1U << seq);
   return seq;
 }

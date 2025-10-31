@@ -42,6 +42,7 @@ SET(Headers
 SET(Sources
   Addr.cc
   Async.cc
+  Bits.cc
   Condition.cc
   Clock.cc
   Disposer.cc
@@ -62,6 +63,7 @@ SET(Sources
 SET(TestSources
   Addr_Test.cc
   Async_Test.cc
+  Bits_Test.cc
   Exception_Test.cc
   List_Test.cc
   Thread_Test.cc
