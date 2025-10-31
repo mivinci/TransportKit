@@ -31,7 +31,7 @@ public:
   Own() : m_ptr(nullptr) {}
   Own(T *ptr) : m_ptr(ptr) {}
 
-  template <class U, class = std::enable_if_t<std::is_base_of_v<T, U>>>
+  template <class U, class = typename std::enable_if<std::is_base_of<T, U>::value>::type>
   Own(Own<U, StaticDisposer> &&other) : m_ptr(other.m_ptr) {
     other.m_ptr = nullptr;
   }
@@ -100,12 +100,12 @@ public:
     other.m_ptr = nullptr;
   }
 
-  template <class U, class = std::enable_if_t<std::is_base_of_v<T, U>>>
+  template <class U, class = typename std::enable_if<std::is_base_of<T, U>::value>::type>
   Own(Own<U> &&other) : m_ptr(other.m_ptr), m_disposer(other.m_disposer) {
     other.m_ptr = nullptr;
   }
 
-  template <class U, class = std::enable_if_t<std::is_base_of_v<T, U>>>
+  template <class U, class = typename std::enable_if<std::is_base_of<T, U>::value>::type>
   Own(U *ptr, Disposer *disposer) : m_ptr(ptr), m_disposer(disposer) {}
 
   ~Own() noexcept(false) { dispose(); }

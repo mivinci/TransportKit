@@ -1,5 +1,6 @@
 #pragma once
 
+#include "KFC/Memory.h"
 #include "KFC/Preclude.h"
 #include <cstddef>
 #include <string>
@@ -76,7 +77,7 @@ private:
 };
 
 template <class T> String joinStringArray(T &&arr, const char *delim) {
-  const size_t arrSize = KFC::size(arr);
+  const size_t arrSize = sizeOf(arr);
   const size_t delimSize = strlen(delim);
   size_t size = 0;
 
@@ -88,7 +89,7 @@ template <class T> String joinStringArray(T &&arr, const char *delim) {
   String res;
   res.resize(size);
 
-  char *ptr = res.data();
+  auto ptr = const_cast<char *>(res.data());
   for (size_t i = 0; i < arrSize; ++i) {
     if (i != 0) {
       memcpy(ptr, delim, delimSize);

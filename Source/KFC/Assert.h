@@ -6,7 +6,7 @@ namespace KFC {
 #define KFC_CHECK(expr, ...)                                                                       \
   do {                                                                                             \
     if (!!(expr)) break;                                                                           \
-    KFC_THROW_FATAL((KFC_NAMESPACE::Exception::Kind::Logic), __VA_ARGS__);                               \
+    KFC_THROW_FATAL((KFC_NAMESPACE::Exception::Kind::Logic), __VA_ARGS__);                         \
     KFC_UNREACHABLE();                                                                             \
   } while (0)
 
@@ -14,8 +14,8 @@ namespace KFC {
   do {                                                                                             \
     int rc = expr;                                                                                 \
     if (rc >= 0) break;                                                                            \
-    KFC_THROW_FATAL((KFC_NAMESPACE::Exception::Kind::Syscall),                                           \
-              "syscall(" #expr ") returned %d, errno: %d", rc, errno);                             \
+    KFC_THROW_FATAL((KFC_NAMESPACE::Exception::Kind::Syscall),                                     \
+                    "syscall(" #expr ") returned %d, errno: %d", rc, errno);                       \
     KFC_UNREACHABLE();                                                                             \
   } while (0)
 
@@ -24,7 +24,7 @@ namespace KFC {
 
 #define KFC_TODO(...)                                                                              \
   do {                                                                                             \
-    KFC_THROW_FATAL(KFC_NAMESPACE::kUnImplementedError, "TODO: " __VA_ARGS__);                           \
+    KFC_THROW_FATAL(KFC_NAMESPACE::kUnImplementedError, "TODO: " __VA_ARGS__);                     \
     KFC_UNREACHABLE();                                                                             \
   } while (0)
 

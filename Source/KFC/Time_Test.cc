@@ -1,3 +1,4 @@
+#include "KFC/Memory.h"
 #include "KFC/String.h"
 #include "KFC/Testing.h"
 #include "KFC/Time.h"
@@ -17,12 +18,8 @@ static DateTimeTestCase utc_test_cases[] = {
     {978220860, 2000, December, 31, 0, 1, 0, 0, 0, Sunday, 0},
 };
 
-static DateTimeTestCase local_test_cases[]{
-
-};
-
 TEST(TimeTest, UTC) {
-  for (int i = 0; i < std::size(utc_test_cases); i++) {
+  for (int i = 0; i < sizeOf(utc_test_cases); i++) {
     const DateTimeTestCase *c = utc_test_cases + i;
     DateTime dt = Time::fromUnix(c->seconds, 0).toUTC().toDateTime();
     EXPECT_EQ(dt.year, c->datetime.year);
@@ -53,7 +50,7 @@ static TimeFormatTestCases format_test_cases[] = {
 };
 
 TEST(TimeTest, Format) {
-  for (int i = 0; i < std::size(format_test_cases); i++) {
+  for (int i = 0; i < sizeOf(format_test_cases); i++) {
     const TimeFormatTestCases *c = format_test_cases + i;
     String output = Time::fromUnix(c->sec, c->nsec).toUTC().toString(c->format);
     EXPECT_EQ(output, c->output);

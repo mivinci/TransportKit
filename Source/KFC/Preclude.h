@@ -204,8 +204,3 @@
 #define KFC_MAX(a, b) (((a) > (b)) ? (a) : (b))
 
 #define KFC_DISCARD(x) (void)(x)
-
-KFC_NAMESPACE_BEG
-template <typename T, size_t s> constexpr size_t size(T (&arr)[s]) { return s; }
-template <typename T> constexpr size_t size(T &&arr) { return arr.size(); }
-KFC_NAMESPACE_END
