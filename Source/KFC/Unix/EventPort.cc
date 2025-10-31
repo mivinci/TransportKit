@@ -40,7 +40,7 @@ bool UnixEventPort::poll() {
 
 bool UnixEventPort::doKqueueWait(const struct timespec *timeout) const {
   struct kevent events[16];
-  int n = kevent(m_kqueueFd, nullptr, 0, events, KFC::size(events), timeout);
+  int n = kevent(m_kqueueFd, nullptr, 0, events, sizeOf(events), timeout);
   bool woken = false;
   FdObserver *observer = nullptr;
 
