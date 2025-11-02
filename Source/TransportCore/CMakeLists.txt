@@ -6,13 +6,11 @@ SET(TransportCorePublicHeaders
 )
 
 SET(TransportCorePrivateHeaders
-  Log/Log.h
   Task/Scheduler.h
   Task/Task.h
   Task/TaskManager.h
   Global/Option.h
   Task/NoopScheduler.h
-  Engine/Downloader.h
   P2P/Stun.h
 )
 
@@ -21,7 +19,6 @@ SET(TransportCoreSources
   API/TransportCoreErrorCode.cc
   Task/TaskManager.cc
   Task/Scheduler.cc
-  Log/Log.cc
   P2P/Stun.cc
 )
 

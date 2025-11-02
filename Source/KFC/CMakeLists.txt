@@ -61,22 +61,22 @@ SET(Sources
 )
 
 SET(TestSources
-  Addr_Test.cc
-  Async_Test.cc
-  Bits_Test.cc
-  Exception_Test.cc
-  List_Test.cc
-  Thread_Test.cc
-  Ref_Test.cc
-  StackTrace_Test.cc
-  String_Test.cc
-  Trace_Test.cc
-  Time_Test.cc
-  ThreadPool_Test.cc
-  Result_Test.cc
-  OneOf_Test.cc
-  Own_Test.cc
-  Testing_Main.cc
+  AddrTest.cc
+  AsyncTest.cc
+  BitsTest.cc
+  ExceptionTest.cc
+  ListTest.cc
+  ThreadTest.cc
+  RefTest.cc
+  StackTraceTest.cc
+  StringTest.cc
+  TraceTest.cc
+  TimeTest.cc
+  ThreadPoolTest.cc
+  ResultTest.cc
+  OneOfTest.cc
+  OwnTest.cc
+  TestingMain.cc
 )
 
 IF (UNIX)
@@ -89,7 +89,7 @@ IF (UNIX)
     Unix/OwnFd.cc
   )
   SET(UnixTestSources
-    Unix/EventPort_Test.cc
+    Unix/EventPortTest.cc
   )
   LIST(APPEND Headers ${UnixHeaders})
   LIST(APPEND Sources ${UnixSources})

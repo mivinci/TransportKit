@@ -11,8 +11,8 @@ KFC_NAMESPACE_BEG
 
 class Timer final {
 public:
-  explicit Timer(Time time);
-  Option<Duration> advanceTo(Time time);
+  explicit Timer(const Time &time);
+  Option<Duration> advanceTo(const Time &time);
   Promise<void> atTime(Time time);
   Promise<void> afterDelay(Duration delay);
 

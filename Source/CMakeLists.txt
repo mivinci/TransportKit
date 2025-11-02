@@ -7,7 +7,6 @@ include_directories(${TK_SOURCE_DIR})
 add_definitions(-DTK_SOURCE_DIR="${TK_SOURCE_DIR}")
 
 # Set up TK sub-libraries
-add_subdirectory(API)
 add_subdirectory(TransportCore)
 add_subdirectory(KFC)
 

@@ -2,18 +2,18 @@
 
 KFC_NAMESPACE_BEG
 
-Timer::Timer(Time time) : m_time(std::move(time)) {}
+Timer::Timer(const Time &time) : m_time(time) {}
 
 Promise<void> Timer::atTime(Time time) {
-  return _::createAdaptedPromise<void, PromiseAdaptor>(*this, std::move(time));
+  return _::createAdaptedPromise<void, PromiseAdaptor>(*this, time);
 }
 
 Promise<void> Timer::afterDelay(const Duration delay) {
   return _::createAdaptedPromise<void, PromiseAdaptor>(*this, m_time + delay);
 }
 
-Option<Duration> Timer::advanceTo(Time time) {
-  m_time = std::max(m_time, std::move(time));
+Option<Duration> Timer::advanceTo(const Time &time) {
+  m_time = std::max(m_time, time);
   for (;;) {
     auto it = m_events.begin();
     if (it == m_events.end()) break;

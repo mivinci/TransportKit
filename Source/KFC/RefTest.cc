@@ -5,21 +5,21 @@
 
 namespace KFC {
 
-struct Ref_Test : testing::Test {
+struct RefTest : testing::Test {
   void SetUp() override { X_deleted = 0; }
   static int X_deleted;
 };
 
-int Ref_Test::X_deleted = 0;
+int RefTest::X_deleted = 0;
 
 struct X : RefCounted<X> {
-  ~X() override { Ref_Test::X_deleted++; }
+  ~X() override { RefTest::X_deleted++; }
 };
 
 struct X1 final : X {};
 struct X2 final : X {};
 
-TEST_F(Ref_Test, Ref) {
+TEST_F(RefTest, Ref) {
   {
     Ref a(*new X);
     EXPECT_EQ(a->refCount(), 1);
@@ -40,7 +40,7 @@ TEST_F(Ref_Test, Ref) {
   EXPECT_EQ(X_deleted, 2);
 }
 
-TEST_F(Ref_Test, RefPtr) {
+TEST_F(RefTest, RefPtr) {
   {
     RefPtr a(new X);
     EXPECT_EQ(a->refCount(), 1);
@@ -57,7 +57,7 @@ TEST_F(Ref_Test, RefPtr) {
   EXPECT_EQ(X_deleted, 2);
 }
 
-TEST_F(Ref_Test, RefContainer) {
+TEST_F(RefTest, RefContainer) {
   std::map<int, Ref<X>> m;
   Ref a = adoptRef(*new X);
   m.emplace(0, a);
@@ -79,7 +79,7 @@ TEST_F(Ref_Test, RefContainer) {
   EXPECT_EQ(v[0], a);
 }
 
-TEST_F(Ref_Test, RefInheritance) {
+TEST_F(RefTest, RefInheritance) {
   {
     Ref<X> x = adoptRef(*new X1);
     EXPECT_EQ(x->refCount(), 1);
@@ -101,7 +101,7 @@ TEST_F(Ref_Test, RefInheritance) {
   EXPECT_EQ(X_deleted, 3);
 }
 
-TEST_F(Ref_Test, RefPtrInheritance) {
+TEST_F(RefTest, RefPtrInheritance) {
   {
     RefPtr<X> x = adoptRef(new X1);
     EXPECT_EQ(x->refCount(), 1);
