@@ -23,6 +23,7 @@ SET(Headers
   RunCatchingExceptions.h
   Ref.h
   RefCounted.h
+  ScheduleHandle.h
   Span.h
   StackTrace.h
   Sleep.h

@@ -1,7 +1,9 @@
 #pragma once
 #include "KFC/Clock.h"
+#include "KFC/Mutex.h"
 #include "KFC/Preclude.h"
-#include "KFC/Ticker.h"
+#include "KFC/ScheduleHandle.h"
+#include "KFC/Time.h"
 #include "TransportCore/Task/Task.h"
 
 #include <unordered_map>
@@ -13,7 +15,7 @@ constexpr int8_t kTaskIdSpan = 1;
 class TaskManager {
 public:
   explicit TaskManager()
-      : m_ticker(this, &TaskManager::OnSchedule, KFC::Duration::Second(1), "TaskManager") {}
+      : m_scheduleHandle(this, &TaskManager::OnSchedule, KFC::Duration::fromSecond(1)) {}
 
   TK_RESULT Start();
   TK_RESULT Stop();
@@ -27,7 +29,6 @@ public:
   int64_t ReadData(int32_t task_id, int32_t clip_no, size_t offset, size_t size, char *buf);
 
   void OnSchedule(KFC::Tick);
-  KFC_NODISCARD KFC::Tick GetTick() const { return m_ticker.ticks(); }
 
 private:
   KFC::Option<Task> findTask(int32_t task_id);
@@ -38,7 +39,7 @@ private:
 
   KFC::Time m_startTime;
   KFC::Mutex<Guard> m_guard;
-  KFC::Ticker<TaskManager> m_ticker;
+  KFC::ScheduleHandle<TaskManager> m_scheduleHandle;
 
 public:
   class TaskId {

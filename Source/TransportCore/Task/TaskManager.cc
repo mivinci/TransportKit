@@ -1,12 +1,11 @@
 #include "TransportCore/Task/TaskManager.h"
 
 #include "KFC/Trace.h"
-#include "TransportCore/Log/Log.h"
 
 namespace TransportCore {
 TK_RESULT TaskManager::Start() {
-  m_startTime = KFC::Time::Now();
-  m_ticker.start();
+  m_startTime = KFC::Time::now();
+  m_scheduleHandle.start();
   return TK_OK;
 }
 
@@ -15,7 +14,7 @@ TK_RESULT TaskManager::Stop() {
   for (auto &it : guard->m_taskMap) {
     it.second.Stop();
   }
-  m_ticker.stop();
+  m_scheduleHandle.stop();
   return TK_OK;
 }
 
@@ -67,7 +66,7 @@ std::string TaskManager::GetProxyURL(const int32_t task_id) {
 
 void TaskManager::OnSchedule(const KFC::Tick tick) {
   // We should do some non-task stuff here.
-  TK_INFO("schedule %d", tick);
+  // TK_INFO("schedule %d", tick);
 }
 
 KFC::Option<Task> TaskManager::findTask(const int32_t task_id) {

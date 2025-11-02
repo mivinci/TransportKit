@@ -2,19 +2,17 @@
 
 #include <utility>
 
-#include "KFC/Ticker.h"
+#include "KFC/Ref.h"
+#include "KFC/ScheduleHandle.h"
 #include "TransportCore/API/TransportCore.h"
 
 namespace TransportCore {
 
 class Scheduler : public KFC::AtomicRefCounted<Scheduler> {
- public:
-  explicit Scheduler(const int32_t task_id,
-                     const TransportCoreTaskContext &context)
-      : m_ticker(this, &Scheduler::Schedule, KFC::Duration::Second(1),
-                 "Scheduler"),
-        m_context(context),
-        m_taskId(task_id) {}
+public:
+  explicit Scheduler(const int32_t task_id, const TransportCoreTaskContext &context)
+      : m_scheduleHandle(this, &Scheduler::Schedule, KFC::Duration::fromSecond(1)),
+        m_context(context), m_taskId(task_id) {}
 
   virtual void OnStart() = 0;
   virtual void OnStop() = 0;
@@ -38,10 +36,10 @@ class Scheduler : public KFC::AtomicRefCounted<Scheduler> {
     }
   }
 
- private:
-  KFC::Ticker<Scheduler> m_ticker;
+private:
+  KFC::ScheduleHandle<Scheduler> m_scheduleHandle;
   TransportCoreTaskContext m_context;
   int32_t m_taskId;
 };
 
-}  // namespace TransportCore
+} // namespace TransportCore

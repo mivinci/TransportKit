@@ -29,14 +29,6 @@ TEST_F(TaskManagerTest, TaskId) {
   }
 }
 
-TEST_F(TaskManagerTest, Start) {
-  TaskManager mgr;
-  mgr.Start();
-  KFC_SLEEP(3);
-  ASSERT_EQ(mgr.GetTick(), 3);
-  mgr.Stop();
-}
-
 TEST_F(TaskManagerTest, TaskLifeCycle) {
   TaskManager mgr;
   TransportCoreTaskContext context{};
