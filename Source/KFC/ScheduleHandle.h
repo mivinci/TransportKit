@@ -18,8 +18,8 @@ public:
   explicit ScheduleHandle(T *ptr, const Schedule schedule, const Duration period)
       : m_ptr(ptr), m_schedule(schedule), m_period(period) {}
 
-  bool start() {}
-  bool stop() {}
+  bool start() { return true; }
+  bool stop() { return true; }
 
   void queueWork(Func0 f) {}
   void queueWork(Func1 f) {}

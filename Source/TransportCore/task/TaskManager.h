@@ -9,8 +9,6 @@
 #include <unordered_map>
 
 namespace TransportCore {
-constexpr int32_t kTaskIdBase = 100000;
-constexpr int8_t kTaskIdSpan = 1;
 
 class TaskManager {
 public:
@@ -40,21 +38,6 @@ private:
   KFC::Time m_startTime;
   KFC::Mutex<Guard> m_guard;
   KFC::ScheduleHandle<TaskManager> m_scheduleHandle;
-
-public:
-  class TaskId {
-  public:
-    static int32_t Next(const TransportCoreTaskKind kind, const int32_t start,
-                        const int32_t span) noexcept {
-      static std::atomic<int32_t> s_taskIdGen;
-      const int32_t base = start * (static_cast<int32_t>(kind) + 1);
-      const int32_t offset = s_taskIdGen.fetch_add(span, std::memory_order_relaxed);
-      return offset + base;
-    }
-
-    static TransportCoreTaskKind GetKind(const int32_t task_id, const int32_t start) {
-      return static_cast<TransportCoreTaskKind>(task_id / start);
-    }
-  };
 };
+
 } // namespace TransportCore

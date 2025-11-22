@@ -1,45 +1,48 @@
-SET(TransportCorePublicHeaders
+set(TransportCorePublicHeaders
   API/TransportCore.h
   API/TransportCoreBase.h
   API/TransportCoreErrorCode.h
   API/TransportCoreOption.h
 )
 
-SET(TransportCorePrivateHeaders
+set(TransportCorePrivateHeaders
   task/Scheduler.h
   task/Task.h
+  task/TaskId.h
   task/TaskManager.h
   task/NoopScheduler.h
 )
 
-SET(TransportCoreSources
+set(TransportCoreSources
   API/TransportCore.cc
   API/TransportCoreErrorCode.cc
+  task/TaskId.cc
   task/TaskManager.cc
   task/Scheduler.cc
 )
 
-SET(TransportCoreTestSources
+set(TransportCoreTestSources
   API/TransportCoreTest.cc
+  task/TaskIdTest.cc
   task/TaskManagerTest.cc
 )
 
-SET(TransportCoreAllFiles
+set(TransportCoreAllFiles
   ${TransportCorePublicHeaders}
   ${TransportCorePrivateHeaders}
   ${TransportCoreSources}
   ${TransportCoreTestSources}
 )
 
-ADD_LIBRARY(TransportCore
+add_library(TransportCore
   ${TransportCorePublicHeaders}
   ${TransportCorePrivateHeaders}
   ${TransportCoreSources}
 )
-TARGET_LINK_LIBRARIES(TransportCore PRIVATE KFC ${TK_LIBRARIES})
-TARGET_COMPILE_DEFINITIONS(TransportCore PUBLIC BUILD_TK fvisibility=hidden)
+target_link_libraries(TransportCore PRIVATE KFC ${TK_LIBRARIES})
+target_compile_definitions(TransportCore PUBLIC BUILD_TK fvisibility=hidden)
 
-ADD_EXECUTABLE(TransportCore_Test ${TransportCoreTestSources})
-TARGET_LINK_LIBRARIES(TransportCore_Test TransportCore)
+add_executable(TransportCore_Test ${TransportCoreTestSources})
+target_link_libraries(TransportCore_Test TransportCore KFC_test_main)
 
-SOURCE_GROUP(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${TransportCoreAllFiles})
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${TransportCoreAllFiles})

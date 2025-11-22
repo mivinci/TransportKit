@@ -1,6 +1,6 @@
 #include "TransportCore/task/TaskManager.h"
-
 #include "KFC/Trace.h"
+#include "TransportCore/task/TaskId.h"
 
 namespace TransportCore {
 TK_RESULT TaskManager::Start() {
@@ -50,12 +50,9 @@ TK_RESULT TaskManager::ResumeTask(const int32_t task_id) {
   return TK_OK;
 }
 
-int64_t TaskManager::ReadData(const int32_t task_id, const int32_t clip_no,
-                              const size_t offset, const size_t size,
-                              char *buf) {
-  KFC_IF_SOME(task, findTask(task_id)) {
-    return task.ReadData(clip_no, offset, size, buf);
-  }
+int64_t TaskManager::ReadData(const int32_t task_id, const int32_t clip_no, const size_t offset,
+                              const size_t size, char *buf) {
+  KFC_IF_SOME(task, findTask(task_id)) { return task.ReadData(clip_no, offset, size, buf); }
   return TK_ERR;
 }
 
@@ -64,14 +61,11 @@ std::string TaskManager::GetProxyURL(const int32_t task_id) {
   return "";
 }
 
-void TaskManager::OnSchedule(const KFC::Tick tick) {
-  // We should do some non-task stuff here.
-  // TK_INFO("schedule %d", tick);
-}
+void TaskManager::OnSchedule(const KFC::Tick tick) {}
 
 KFC::Option<Task> TaskManager::findTask(const int32_t task_id) {
   auto &task_map = m_guard.lock()->m_taskMap;
   const auto it = task_map.find(task_id);
   return it == task_map.end() ? KFC::None : KFC::Some(it->second);
 }
-}  // namespace TransportCore
+} // namespace TransportCore

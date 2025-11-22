@@ -1,4 +1,4 @@
-SET(Headers
+set(Headers
   Addr.h
   Async.h
   Assert.h
@@ -40,7 +40,7 @@ SET(Headers
   WaitGroup.h
 )
 
-SET(Sources
+set(Sources
   Addr.cc
   Async.cc
   Bits.cc
@@ -61,7 +61,7 @@ SET(Sources
   URL.cc
 )
 
-SET(TestSources
+set(TestSources
   AddrTest.cc
   AsyncTest.cc
   BitsTest.cc
@@ -77,37 +77,38 @@ SET(TestSources
   ResultTest.cc
   OneOfTest.cc
   OwnTest.cc
-  TestingMain.cc
 )
 
-IF (UNIX)
-  SET(UnixHeaders
+if (UNIX)
+  set(UnixHeaders
     Unix/EventPort.h
     Unix/OwnFd.h
   )
-  SET(UnixSources
+  set(UnixSources
     Unix/EventPort.cc
     Unix/OwnFd.cc
   )
-  SET(UnixTestSources
+  set(UnixTestSources
     Unix/EventPortTest.cc
   )
-  LIST(APPEND Headers ${UnixHeaders})
-  LIST(APPEND Sources ${UnixSources})
-  LIST(APPEND TestSources ${UnixTestSources})
-ELSEIF (WIN32)
+  list(APPEND Headers ${UnixHeaders})
+  list(APPEND Sources ${UnixSources})
+  list(APPEND TestSources ${UnixTestSources})
+elseif (WIN32)
 
-ENDIF (UNIX)
+endif (UNIX)
 
-SET(Files ${Headers} ${Sources} ${TestSources})
+set(Files ${Headers} ${Sources} ${TestSources})
 
-ADD_LIBRARY(KFC ${Headers} ${Sources})
+add_library(KFC ${Headers} ${Sources})
 
-ADD_EXECUTABLE(KFC_Test ${TestSources})
-TARGET_LINK_LIBRARIES(KFC_Test KFC GTest)
+add_library(KFC_test_main TestingMain.cc)
 
-SOURCE_GROUP(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${Files})
-GET_TARGET_PROPERTY(KFC_CXX_STANDARD KFC CXX_STANDARD)
-GET_TARGET_PROPERTY(KFC_Test_CXX_STANDARD KFC_Test CXX_STANDARD)
-MESSAGE(STATUS "[KFC] C艹 standard: ${KFC_CXX_STANDARD}")
-MESSAGE(STATUS "[KFC_Test] C艹 standard: ${KFC_Test_CXX_STANDARD}")
+add_executable(KFC_Test ${TestSources})
+target_link_libraries(KFC_Test KFC GTest KFC_test_main)
+
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${Files})
+get_target_property(KFC_CXX_STANDARD KFC CXX_STANDARD)
+get_target_property(KFC_Test_CXX_STANDARD KFC_Test CXX_STANDARD)
+message(STATUS "[KFC] C艹 standard: ${KFC_CXX_STANDARD}")
+message(STATUS "[KFC_Test] C艹 standard: ${KFC_Test_CXX_STANDARD}")
