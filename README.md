@@ -1,16 +1,9 @@
 # TransportKit
 
-**T**ransport**K**it provides data transfer acceleration (both download and upload), Peer-to-peer data transfers, and
-local proxy services.
+TransportKit provides peer-to-peer data transfer.
 
 > The project is still being early developed, do not use it for any purpose whatsoever.
 >
-
-What's TransportKit used for?
-
-Data transmission serves as the foundation for nearly all pieces of software – whether downloading games from platforms
-like Steam, streaming video content, or requesting resources via HTTP protocols on the web. TransportKit is trying to be
-such the one your software can be built upon to deliver data end to end as fast as your bandwidth allows.
 
 ## Architecture
 
