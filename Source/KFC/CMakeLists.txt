@@ -4,7 +4,7 @@ SET(Headers
   Assert.h
   Bits.h
   Clock.h
-  Condition.h
+  Condvar.h
   CopyMove.h
   Disposer.h
   Endian.h
@@ -44,7 +44,7 @@ SET(Sources
   Addr.cc
   Async.cc
   Bits.cc
-  Condition.cc
+  Condvar.cc
   Clock.cc
   Disposer.cc
   Exception.cc

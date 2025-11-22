@@ -1,6 +1,6 @@
 #pragma once
 
-#include "KFC/Condition.h"
+#include "KFC/Condvar.h"
 #include "KFC/Exception.h"
 #include "KFC/Function.h"
 #include "KFC/List.h"
@@ -106,6 +106,7 @@ public:
 
 class PromiseNode {
 public:
+  // Destructor.
   virtual ~PromiseNode() noexcept(false) = default;
   // Read the result of the promise.
   virtual void read(PromiseResultBase &result) noexcept = 0;
@@ -280,7 +281,7 @@ private:
 
   const Executor &m_targetExecutor;     // The executor executing this event.
   Option<Executor &> m_requestExecutor; // The executor requesting this event.
-  Condition m_condition;                // Notify the `m_requestExecutor` when the event is done.
+  Condvar m_condvar;                    // Notify the `m_requestExecutor` when the event is done.
 
   class DelayedDoneDisposer;
   friend KFC::Executor;
@@ -581,7 +582,8 @@ public:
   KFC_DISALLOW_COPY_AND_MOVE(WaitScope)
 
 private:
-  friend void _::wait(_::OwnPromiseNode &node, _::PromiseResultBase &result, const WaitScope &scope);
+  friend void _::wait(_::OwnPromiseNode &node, _::PromiseResultBase &result,
+                      const WaitScope &scope);
 
   template <class Func> void runOnStackPool(Func &&func) const;
 

@@ -130,7 +130,7 @@ TEST_F(AsyncTest, InThreadExecuteSyncException) {
 
 TEST_F(AsyncTest, CrossThreadExecuteAsync) {
   SETUP_TEST_EVENT_LOOP;
-  Condition cv;
+  Condvar cv;
   Mutex<Option<Ref<Executor>>> executor;
   Own<_::PromiseResolver<int>> resolver;
 
@@ -151,7 +151,7 @@ TEST_F(AsyncTest, CrossThreadExecuteAsync) {
 
 TEST_F(AsyncTest, CrossThreadExecuteAsyncException) {
   SETUP_TEST_EVENT_LOOP;
-  Condition cv;
+  Condvar cv;
   Mutex<Option<Ref<Executor>>> executor;
   Own<_::PromiseResolver<int>> resolver;
 
@@ -173,7 +173,7 @@ TEST_F(AsyncTest, CrossThreadExecuteAsyncException) {
 
 TEST_F(AsyncTest, CrossThreadExecuteSync) {
   SETUP_TEST_EVENT_LOOP;
-  Condition cv;
+  Condvar cv;
   Mutex<Option<Ref<Executor>>> executor;
   Own<_::PromiseResolver<int>> resolver;
 

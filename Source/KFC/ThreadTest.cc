@@ -1,6 +1,6 @@
 #include <atomic>
 
-#include "KFC/Condition.h"
+#include "KFC/Condvar.h"
 #include "KFC/Own.h"
 #include "KFC/Testing.h"
 #include "KFC/Thread.h"

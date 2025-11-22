@@ -1,6 +1,6 @@
 #pragma once
 
-#include "KFC/Condition.h"
+#include "KFC/Condvar.h"
 #include "KFC/CopyMove.h"
 #include "KFC/Option.h"
 #include "KFC/Preclude.h"
@@ -99,7 +99,7 @@ private:
   static int genSafeWorkerThreadMaxAge(int age);
   static int genSafeWorkerThreadMaxSleepSeconds(int seconds);
 
-  Condition m_condition;
+  Condvar m_condvar;
   Mutex<Guarded> m_guarded;
 };
 

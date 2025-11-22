@@ -1,8 +1,8 @@
-#include "KFC/Condition.h"
+#include "KFC/Condvar.h"
 
 KFC_NAMESPACE_BEG
 
-Condition::Condition() {
+Condvar::Condvar() {
 #ifdef _WIN32
   InitializeConditionVariable(&cv);
 #else
@@ -10,7 +10,7 @@ Condition::Condition() {
 #endif
 }
 
-void Condition::notifyOne() {
+void Condvar::notifyOne() {
 #ifdef _WIN32
   WakeConditionVariable(&cv);
 #else
@@ -18,7 +18,7 @@ void Condition::notifyOne() {
 #endif
 }
 
-void Condition::notifyAll() {
+void Condvar::notifyAll() {
 #ifdef _WIN32
   WakeAllConditionVariable(&cv);
 #else

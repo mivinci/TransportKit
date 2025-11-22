@@ -40,7 +40,7 @@ void ThreadPool::submitTask(Task &&task) {
       guarded->numThreads++;
     }
   } else {
-    m_condition.notifyOne();
+    m_condvar.notifyOne();
   }
 }
 
@@ -78,7 +78,7 @@ void ThreadPool::runWorker(const int seq) {
     }
 
     guarded->numIdleThreads++;
-    const bool woken = m_condition.wait(guarded, Duration::fromSecond(guarded->maxSleepSeconds));
+    const bool woken = m_condvar.wait(guarded, Duration::fromSecond(guarded->maxSleepSeconds));
     guarded->numIdleThreads--;
 
     if (woken) {
@@ -94,7 +94,7 @@ void ThreadPool::shutdown() {
   if (guarded->shutdown) return;
 
   guarded->shutdown = true;
-  m_condition.notifyAll();
+  m_condvar.notifyAll();
 
   // Take the ownership of all threads
   auto lastExitingThread = std::move(guarded->lastExitingThread);

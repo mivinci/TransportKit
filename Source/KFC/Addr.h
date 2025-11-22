@@ -25,16 +25,16 @@ enum class AddrParseError : int {
 class IPv6Addr {
 public:
   explicit IPv6Addr() : m_octets() {}
-  explicit IPv6Addr(const uint16 a, const uint16 b, const uint16 c, const uint16 d, const uint16 e,
-                    const uint16 f, const uint16 g, const uint16 h)
+  explicit IPv6Addr(const uint16_t a, const uint16_t b, const uint16_t c, const uint16_t d,
+                    const uint16_t e, const uint16_t f, const uint16_t g, const uint16_t h)
       : m_octets() {
     KFC_CONSTEXPR_IF(KFC_LITTLE_ENDIAN) {
-      const uint16 octets[8] = {swap(a), swap(b), swap(c), swap(d),
-                                swap(e), swap(f), swap(g), swap(h)};
+      const uint16_t octets[8] = {swap(a), swap(b), swap(c), swap(d),
+                                  swap(e), swap(f), swap(g), swap(h)};
       std::memcpy(m_octets.addr16, octets, sizeof(octets));
     }
     else {
-      const uint16 octets[8] = {a, b, c, d, e, f, g, h};
+      const uint16_t octets[8] = {a, b, c, d, e, f, g, h};
       std::memcpy(m_octets.addr16, octets, sizeof(octets));
     }
   }
@@ -75,7 +75,7 @@ public:
 private:
   union {
     uint8_t addr8[16];
-    uint16 addr16[8];
+    uint16_t addr16[8];
     uint32_t addr32[4];
     uint64_t addr64[2];
   } m_octets;
@@ -84,7 +84,8 @@ private:
 class IPv4Addr {
 public:
   explicit IPv4Addr() : m_octets() {}
-  explicit IPv4Addr(const uint8 a, const uint8 b, const uint8 c, const uint8 d) : m_octets() {
+  explicit IPv4Addr(const uint8_t a, const uint8_t b, const uint8_t c, const uint8_t d)
+      : m_octets() {
     m_octets[0] = a;
     m_octets[1] = b;
     m_octets[2] = c;
@@ -111,25 +112,25 @@ public:
 
   KFC_NODISCARD String toString() const;
 
-  KFC_NODISCARD uint8 operator[](const size_t index) const { return m_octets[index]; }
+  KFC_NODISCARD uint8_t operator[](const size_t index) const { return m_octets[index]; }
 
   KFC_NODISCARD IPv6Addr toIPv6Compatible() const {
-    const uint16 g = (m_octets[1] << 8) | m_octets[0];
-    const uint16 h = (m_octets[3] << 8) | m_octets[2];
+    const uint16_t g = (m_octets[1] << 8) | m_octets[0];
+    const uint16_t h = (m_octets[3] << 8) | m_octets[2];
     return IPv6Addr(0, 0, 0, 0, 0, 0, g, h);
   }
 
   KFC_NODISCARD IPv6Addr toIPv6Mapped() const {
-    const uint16 g = (m_octets[1] << 8) | m_octets[0];
-    const uint16 h = (m_octets[3] << 8) | m_octets[2];
+    const uint16_t g = (m_octets[1] << 8) | m_octets[0];
+    const uint16_t h = (m_octets[3] << 8) | m_octets[2];
     return IPv6Addr(0, 0, 0, 0, 0, 0xFFFF, g, h);
   }
 
-  KFC_NODISCARD uint32 toUint32() const {
+  KFC_NODISCARD uint32_t toUint32() const {
     return (m_octets[0] << 24) | (m_octets[1] << 16) | (m_octets[2] << 8) | m_octets[3];
   }
 
-  static IPv4Addr fromUint32(const uint32 bits) {
+  static IPv4Addr fromUint32(const uint32_t bits) {
     return IPv4Addr((bits >> 24) & 0xFF, (bits >> 16) & 0xFF, (bits >> 8) & 0xFF, bits & 0xFF);
   }
 
@@ -137,7 +138,7 @@ public:
   static IPv4Addr fromInAddr(const IN_ADDR &);
 
 private:
-  uint8 m_octets[4];
+  uint8_t m_octets[4];
 };
 
 class IPAddr {
@@ -177,25 +178,25 @@ private:
 
 struct SocketAddrV4 {
   IPv4Addr ip;
-  uint16 port;
+  uint16_t port;
   SocketAddrV4() : port(0) {}
-  SocketAddrV4(const IPv4Addr &ip, const uint16 port) : ip(ip), port(port) {}
+  SocketAddrV4(const IPv4Addr &ip, const uint16_t port) : ip(ip), port(port) {}
 };
 
 struct SocketAddrV6 {
   IPv6Addr ip;
-  uint16 port;
+  uint16_t port;
   SocketAddrV6() : port(0) {}
-  SocketAddrV6(const IPv6Addr &ip, const uint16 port) : ip(ip), port(port) {}
+  SocketAddrV6(const IPv6Addr &ip, const uint16_t port) : ip(ip), port(port) {}
 };
 
 class SocketAddr {
 public:
   explicit SocketAddr() : m_family(AF_UNSPEC) {}
-  explicit SocketAddr(const IPv4Addr &ip, const uint16 port) : m_family(AF_INET) {
+  explicit SocketAddr(const IPv4Addr &ip, const uint16_t port) : m_family(AF_INET) {
     KFC_DISCARD(m_addr.emplace<SocketAddrV4>(SocketAddrV4(ip, port)));
   }
-  explicit SocketAddr(const IPv6Addr &ip, const uint16 port) : m_family(AF_INET6) {
+  explicit SocketAddr(const IPv6Addr &ip, const uint16_t port) : m_family(AF_INET6) {
     KFC_DISCARD(m_addr.emplace<SocketAddrV6>(SocketAddrV6(ip, port)));
   }
 

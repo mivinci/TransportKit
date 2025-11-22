@@ -7,9 +7,9 @@
 
 KFC_NAMESPACE_BEG
 
-class Condition {
+class Condvar {
 public:
-  explicit Condition();
+  explicit Condvar();
 
   void notifyOne();
   void notifyAll();

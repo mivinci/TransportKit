@@ -84,7 +84,7 @@ private:
 #endif
 
   friend MutexGuard<T>;
-  friend class Condition;
+  friend class Condvar;
 };
 
 template <class T> class MutexGuard {
@@ -117,7 +117,7 @@ private:
   Mutex<T> *m_lock;
 
   friend class Mutex<T>;
-  friend class Condition;
+  friend class Condvar;
 };
 
 KFC_NAMESPACE_END

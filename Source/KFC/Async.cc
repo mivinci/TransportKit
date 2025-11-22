@@ -390,7 +390,7 @@ void XThreadEventBase::done() {
             "calling `XThreadEventBase::done` from wrong thread.");
   KFC_IF_SOME(e, m_requestExecutor) { e.sendReady(*this); }
   else {
-    m_condition.notifyOne();
+    m_condvar.notifyOne();
   }
 }
 
@@ -460,7 +460,7 @@ void Executor::sendPending(_::XThreadEventBase &event, const bool sync) {
 
   if (sync) {
     // Wait for the event to complete.
-    event.m_condition.wait(guard);
+    event.m_condvar.wait(guard);
   }
 }
 
