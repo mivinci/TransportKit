@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-#include "TransportCore/Task/TaskManager.h"
+#include "TransportCore/task/TaskManager.h"
 
 static TransportCore::TaskManager *g_taskManager = nullptr;
 static KFC::Mutex<bool> g_inited;
@@ -48,14 +48,13 @@ TK_RESULT TransportCoreResumeTask(const int32_t task_id) {
   return g_taskManager->ResumeTask(task_id);
 }
 
-int64_t TransportCoreReadData(int32_t task_id, int32_t clip_no, size_t offset,
-                              size_t size, char *buf) {
+int64_t TransportCoreReadData(const int32_t task_id, const int32_t clip_no, const size_t offset,
+                              const size_t size, char *buf) {
   if (!*g_inited.lock()) return -1;
   return g_taskManager->ReadData(task_id, clip_no, offset, size, buf);
 }
 
-void TransportCoreGetProxyURL(const int32_t task_id, char *buf,
-                              const size_t buf_size) {
+void TransportCoreGetProxyURL(const int32_t task_id, char *buf, const size_t buf_size) {
   if (!*g_inited.lock()) return;
   const std::string proxy_url = g_taskManager->GetProxyURL(task_id);
   const size_t size = KFC_MIN(buf_size, proxy_url.size());

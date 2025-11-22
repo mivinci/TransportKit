@@ -24,7 +24,7 @@ KFC_NAMESPACE_BEG
 // a recoverable exception will be handled by the thread local recoverable exception callback and
 // then continue to execute. If no thread local exception callback is set, the global default one
 // will be used. The global default fatal exception callback just simply throws the exception by
-// C++'s keyword `throw`, while the global default recoverable exception callback just does nothing.
+// C++'s keyword `throw`, while the default global recoverable exception callback just does nothing.
 //
 // Example:
 //

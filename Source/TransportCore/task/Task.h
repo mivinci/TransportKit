@@ -1,6 +1,6 @@
 #pragma once
 #include "TransportCore/API/TransportCore.h"
-#include "TransportCore/Task/NoopScheduler.h"
+#include "TransportCore/task/NoopScheduler.h"
 
 namespace TransportCore {
 // We can actually implement Start/Stop/Pause/Resume/ReadData etc. directly in

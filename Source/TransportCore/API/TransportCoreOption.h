@@ -3,10 +3,8 @@
 
 #include "TransportCore/API/TransportCoreBase.h"
 
-enum TransportCoreOption {
-  kTransportCoreOptionLocalServerPort,
-};
+enum TransportCoreOption {};
 
 TK_API(void) TransportCoreSetGlobalOption(enum TransportCoreOption, ...);
 
-#endif  // TRANSPORT_CORE_OPTION_H_
+#endif // TRANSPORT_CORE_OPTION_H_

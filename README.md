@@ -14,25 +14,7 @@ such the one your software can be built upon to deliver data end to end as fast 
 
 ## Architecture
 
-![TransportKit](Documents/TransportKit.png)
-
-## Contents
-
-- [Bazel](Bazel) — Bazel configurations
-- [CMake](CMake) — CMake configurations
-- [Examples](Examples) — Usage examples
-- [Scripts](Scripts) — Scripts to build TransportKit
-- [Platform](Platform) — Bindings to the TransportKit C API, Java for Android, for example
-- [Tests](Tests) — Feature tests
-- [Source](Source)
-    - [API](Source/API) — TransportKit C API
-    - [TransportCore](Source/TransportCore) — Data transfer core
-    - [LocalServer](Source/LocalServer) — Local proxy server
-    - [Debugger](Source/Debugger) — Debug server
-    - [Telemetry](Source/Telemetry) — Telemetry client
-    - [NetProber](Source/NetProber) — P2P NetProber
-    - [ThirdParty](Source/ThirdParty) — Third-party libraries
-    - [KFC](Source/KFC) — **K**it **F**or **C**oncurrency
+![TransportKit](Documents/TransportKit.drawio.png)
 
 ## Develop
 

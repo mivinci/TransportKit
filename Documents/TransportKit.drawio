@@ -58,7 +58,7 @@
         <mxCell id="ARbY_WrPn276EFxLmVgK-12" value="P2P" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontFamily=Comic Sans MS;sketch=1;curveFitting=1;jiggle=2;container=0;" parent="1" vertex="1">
           <mxGeometry x="160" y="360" width="110" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="ARbY_WrPn276EFxLmVgK-5" value="CDN" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontFamily=Comic Sans MS;sketch=1;curveFitting=1;jiggle=2;container=0;" parent="1" vertex="1">
+        <mxCell id="ARbY_WrPn276EFxLmVgK-5" value="HTTP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontFamily=Comic Sans MS;sketch=1;curveFitting=1;jiggle=2;container=0;" parent="1" vertex="1">
           <mxGeometry x="40" y="360" width="110" height="90" as="geometry" />
         </mxCell>
         <mxCell id="htI6FF0RRZnNIidORgzR-2" value="DNS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontFamily=Comic Sans MS;sketch=1;curveFitting=1;jiggle=2;container=0;" parent="1" vertex="1">

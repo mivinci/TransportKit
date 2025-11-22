@@ -1,4 +1,4 @@
-#include "TransportCore/Task/TaskManager.h"
+#include "TransportCore/task/TaskManager.h"
 #include "KFC/Sleep.h"
 #include "KFC/Testing.h"
 
@@ -32,7 +32,7 @@ TEST_F(TaskManagerTest, TaskId) {
 TEST_F(TaskManagerTest, TaskLifeCycle) {
   TaskManager mgr;
   TransportCoreTaskContext context{};
-  context.keyid = "abc";
+  context.key = "abc";
   context.kind = kTransportCoreTaskKindUnSpec;
   context.schedule = MockTaskScheduleCallback;
   const int32_t task_id = mgr.CreateTask(context);

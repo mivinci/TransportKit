@@ -6,25 +6,22 @@ SET(TransportCorePublicHeaders
 )
 
 SET(TransportCorePrivateHeaders
-  Task/Scheduler.h
-  Task/Task.h
-  Task/TaskManager.h
-  Global/Option.h
-  Task/NoopScheduler.h
-  P2P/Stun.h
+  task/Scheduler.h
+  task/Task.h
+  task/TaskManager.h
+  task/NoopScheduler.h
 )
 
 SET(TransportCoreSources
   API/TransportCore.cc
   API/TransportCoreErrorCode.cc
-  Task/TaskManager.cc
-  Task/Scheduler.cc
-  P2P/Stun.cc
+  task/TaskManager.cc
+  task/Scheduler.cc
 )
 
 SET(TransportCoreTestSources
   API/TransportCoreTest.cc
-  Task/TaskManagerTest.cc
+  task/TaskManagerTest.cc
 )
 
 SET(TransportCoreAllFiles

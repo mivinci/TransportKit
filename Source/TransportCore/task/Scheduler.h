@@ -10,9 +10,9 @@ namespace TransportCore {
 
 class Scheduler : public KFC::AtomicRefCounted<Scheduler> {
 public:
-  explicit Scheduler(const int32_t task_id, const TransportCoreTaskContext &context)
+  explicit Scheduler(const int32_t taskId, const TransportCoreTaskContext &context)
       : m_scheduleHandle(this, &Scheduler::Schedule, KFC::Duration::fromSecond(1)),
-        m_context(context), m_taskId(task_id) {}
+        m_context(context), m_taskId(taskId) {}
 
   virtual void OnStart() = 0;
   virtual void OnStop() = 0;

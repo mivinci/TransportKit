@@ -1,7 +1,7 @@
 #ifndef TRANSPORT_CORE_H_
 #define TRANSPORT_CORE_H_
-#include <stddef.h>  // NOLINT(*-deprecated-headers)
-#include <stdint.h>  // NOLINT(*-deprecated-headers)
+#include <stddef.h> // NOLINT(*-deprecated-headers)
+#include <stdint.h> // NOLINT(*-deprecated-headers)
 
 #include "TransportCoreBase.h"
 #include "TransportCoreErrorCode.h"
@@ -9,7 +9,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif  // __cplusplus
+#endif // __cplusplus
 
 enum TransportCoreTaskKind {
   kTransportCoreTaskKindUnSpec = 0,
@@ -34,17 +34,12 @@ struct TransportCoreTaskEvent {
 
 struct TransportCoreTaskContext {
   TransportCoreTaskKind kind;
-  const char *keyid;
+  const char *key;
   const char *urls;
   const char *save_path;
   void *context;
   void (*schedule)(uint64_t, void *);
   void (*notify)(TransportCoreTaskEvent, void *);
-};
-
-enum TransportCoreLogFormat {
-  kTransportCoreLogFormatPlain,
-  kTransportCoreLogFormatJSON,
 };
 
 typedef struct TransportCoreTaskContext TransportCoreTaskContext;
@@ -61,10 +56,9 @@ TK_API(TK_RESULT) TransportCoreResumeTask(int32_t);
 TK_API(int64_t) TransportCoreReadData(int32_t, int32_t, size_t, size_t, char *);
 TK_API(void) TransportCoreGetProxyURL(int32_t, char *, size_t);
 TK_API(void)
-TransportCoreSetLogCallback(TransportCoreLogCallback,
-                            enum TransportCoreLogFormat);
+TransportCoreSetLogCallback(TransportCoreLogCallback);
 
 #ifdef __cplusplus
 }
-#endif  // __cplusplus
-#endif  // TRANSPORT_CORE_H_
+#endif // __cplusplus
+#endif // TRANSPORT_CORE_H_
